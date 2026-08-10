@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Six platforms, three superapps · Architecture reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F151B; --bg-2:#0B1015;
+    --surface:#151D25; --surface-2:#1A2530;
+    --line:#28353F; --line-2:#33454F;
+    --text:#E7EEF4; --text-dim:#93A2AF; --text-mute:#647380;
+    --accent:#4AA8F0; --accent-dim:#205C87;
+    --hot:#E8734A; --warm:#E0A93C; --cool:#8DA3B3;
+    --arrow:#5C6E7B; --violet:#8B7BD8;
+    --display:'Space Grotesk',sans-serif;
+    --body:'IBM Plex Sans',sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+    --maxw:1060px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--body); font-size:17px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  h1,h2,h3{font-family:var(--display); font-weight:600; line-height:1.15; margin:0;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent);}
+  .section-num{font-family:var(--mono); font-size:12px; color:var(--text-mute); letter-spacing:.14em;}
+
+  /* hero */
+  .hero{position:relative; overflow:hidden; border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#0C1218 0%, var(--bg) 100%);}
+  .plan-bg{position:absolute; inset:0; opacity:.62; pointer-events:none;
+    mask-image:radial-gradient(125% 100% at 82% 4%, #000 0%, transparent 66%);}
+  .hero-inner{position:relative; padding:82px 0 68px;}
+  .hero h1{font-size:clamp(38px,6.5vw,68px); font-weight:700; letter-spacing:-.02em; max-width:16ch;}
+  .hero h1 .accent{color:var(--accent);}
+  .hero .lede{margin:22px 0 0; font-size:clamp(17px,2.4vw,20px); color:var(--text-dim); max-width:58ch;}
+  .chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:32px;}
+  .chip{font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; color:var(--text-dim);
+    border:1px solid var(--line-2); padding:7px 13px; border-radius:100px;
+    background:rgba(255,255,255,.015); display:inline-flex; align-items:center; gap:8px;}
+  .chip .dot{width:6px; height:6px; border-radius:50%; background:var(--accent);}
+
+  /* sections */
+  section{padding:74px 0; border-bottom:1px solid var(--line);}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:8px; flex-wrap:wrap;}
+  .sec-head h2{font-size:clamp(26px,3.6vw,34px); letter-spacing:-.01em;}
+  .sec-sub{color:var(--text-dim); max-width:64ch; margin:14px 0 0; font-size:17px;}
+  .lead-copy p{max-width:66ch; margin:0 0 18px; color:#CBD6DE;}
+  .lead-copy p:last-child{margin-bottom:0;}
+  .lead-copy strong{color:var(--text); font-weight:600;}
+
+  /* cards */
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:34px;}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:22px 22px 24px; transition:border-color .25s ease, transform .25s ease;}
+  .card:hover{border-color:var(--line-2); transform:translateY(-2px);}
+  .card .ico{width:34px; height:34px; margin-bottom:16px; color:var(--accent);}
+  .card h3{font-size:18px; font-weight:600; margin-bottom:7px;}
+  .card p{margin:0; font-size:15px; line-height:1.6; color:var(--text-dim);}
+
+  /* principles */
+  .principles{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:34px;}
+  .principle{background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--pc);
+    border-radius:14px; padding:24px 26px 26px; position:relative; overflow:hidden;}
+  .principle .pn{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--pc); margin-bottom:10px;}
+  .principle h3{font-size:21px; line-height:1.14; letter-spacing:-.01em; margin-bottom:9px;}
+  .principle .tag{font-size:14.5px; color:var(--pc); font-style:italic; line-height:1.5; margin:0 0 16px;
+    padding-bottom:16px; border-bottom:1px solid var(--line);}
+  .principle p{margin:0 0 12px; font-size:14.5px; color:var(--text-dim); line-height:1.7;}
+  .principle p:last-child{margin-bottom:0;}
+  .principle p b{color:var(--text); font-weight:600;}
+
+  /* platform blocks */
+  .plat{background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--pc);
+    border-radius:14px; padding:26px 28px 28px; margin-top:16px;}
+  .plat-head{display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap;}
+  .plat-key{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--pc); display:block; margin-bottom:6px;}
+  .plat-head h3{font-size:20px;}
+  .plat-owner{font-family:var(--mono); font-size:12.5px; color:var(--text-dim);
+    border:1px solid var(--line-2); padding:5px 12px; border-radius:100px; white-space:nowrap;}
+  .plat-desc{margin:14px 0 0; font-size:15px; color:var(--text-dim); max-width:80ch; line-height:1.7;}
+  .plat-desc b{color:var(--text); font-weight:600;}
+
+  /* catalog table */
+  .cat{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-top:20px;}
+  .cat-row{display:grid; grid-template-columns:1.1fr 128px 118px 1.5fr; gap:16px; padding:13px 20px;
+    border-top:1px solid var(--line); font-size:14.5px; align-items:baseline;}
+  .cat-row:first-child{border-top:none; background:var(--surface-2); font-family:var(--mono);
+    font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-mute);}
+  .cat-svc{color:var(--text); font-weight:500;}
+  .cat-note{color:var(--text-dim); font-size:13.5px; line-height:1.55;}
+  .pill{display:inline-flex; font-family:var(--mono); font-size:10.5px; letter-spacing:.06em;
+    text-transform:uppercase; padding:3px 9px; border-radius:100px; border:1px solid; white-space:nowrap;}
+  .p-prod{color:var(--accent); border-color:var(--accent-dim); background:rgba(74,168,240,.10);}
+  .p-beta{color:var(--warm); border-color:rgba(224,169,60,.38); background:rgba(224,169,60,.07);}
+  .p-gap{color:var(--hot); border-color:rgba(232,115,74,.38); background:rgba(232,115,74,.07);}
+  .p-tier{color:var(--text-dim); border-color:var(--line-2); background:rgba(255,255,255,.015);}
+
+  /* tiers / maturity ladder */
+  .ladder{margin-top:34px; display:flex; flex-direction:column; gap:14px;}
+  .tier{display:grid; grid-template-columns:150px 1fr; gap:24px; align-items:center;
+    background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--tc);
+    border-radius:0 14px 14px 0; padding:22px 24px;}
+  .tier .zoom{font-family:var(--display); font-weight:600;}
+  .tier .zoom .z{font-size:19px; color:var(--text); letter-spacing:-.01em; line-height:1.2; display:block;}
+  .tier .zoom .lbl{display:block; font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--text-mute); margin-top:5px;}
+  .tier .cadence{font-family:var(--mono); font-size:13px; color:var(--tc); letter-spacing:.05em; margin-bottom:6px;}
+  .tier .desc{font-size:15.5px; color:var(--text-dim); margin:0;}
+  .tier .desc b{color:var(--text); font-weight:600;}
+  .ladder-note{margin-top:22px; font-size:15px; color:var(--text-dim); display:flex; gap:12px; align-items:flex-start;}
+  .ladder-note .k{color:var(--accent); font-family:var(--mono); font-size:12px; letter-spacing:.1em;
+    text-transform:uppercase; white-space:nowrap; padding-top:3px;}
+
+  /* callout */
+  .callout{margin-top:34px; background:linear-gradient(135deg, rgba(74,168,240,.09), rgba(74,168,240,.02));
+    border:1px solid var(--accent-dim); border-radius:16px; padding:30px 32px;}
+  .callout.warn{background:linear-gradient(135deg, rgba(232,115,74,.08), rgba(232,115,74,.02)); border-color:rgba(232,115,74,.38);}
+  .callout h3{font-size:20px; margin-bottom:10px; color:var(--text);}
+  .callout p{margin:0 0 14px; color:#CBD6DE; max-width:74ch; font-size:16px;}
+  .callout p:last-child{margin-bottom:0;}
+
+  /* diagrams */
+  .diagram-block{margin-top:40px;}
+  .diagram-block:first-of-type{margin-top:34px;}
+  .diagram-cap{display:flex; gap:14px; align-items:baseline; margin-bottom:16px;}
+  .diagram-cap .n{font-family:var(--mono); color:var(--accent); font-size:13px; padding-top:2px;}
+  .diagram-cap h3{font-size:19px; font-weight:600;}
+  .diagram-cap p{margin:4px 0 0; color:var(--text-dim); font-size:15px; max-width:72ch;}
+  .diagram-frame{background:var(--bg-2); border:1px solid var(--line); border-radius:16px; padding:26px 22px;}
+  svg.diagram{width:100%; height:auto; display:block;}
+  .d-zone{fill:rgba(255,255,255,.018); stroke:var(--line-2); stroke-dasharray:5 5; stroke-width:1;}
+  .d-box{fill:var(--surface-2); stroke:var(--line-2); stroke-width:1;}
+  .d-title{fill:var(--text); font-family:var(--body); font-size:15px; font-weight:500;}
+  .d-sub{fill:var(--text-dim); font-family:var(--mono); font-size:12px;}
+  .d-zonelabel{fill:var(--text-mute); font-family:var(--mono); font-size:12px; letter-spacing:.12em;}
+  .d-arrow{stroke:var(--arrow); stroke-width:1.5; fill:none;}
+  .d-soft{stroke:var(--arrow); stroke-width:1.2; fill:none; stroke-dasharray:4 5; opacity:.8;}
+  .n-in rect{fill:rgba(141,163,179,.15); stroke:var(--cool);} .n-in .d-title{fill:#C6D5DF;}
+  .n-serve rect{fill:rgba(74,168,240,.15); stroke:var(--accent);} .n-serve .d-title{fill:#A8D5F8;}
+  .n-hot rect{fill:rgba(232,115,74,.14); stroke:var(--hot);} .n-hot .d-title{fill:#F2A585;}
+  .n-warm rect{fill:rgba(224,169,60,.14); stroke:var(--warm);} .n-warm .d-title{fill:#ECC677;}
+  .n-cool rect{fill:rgba(141,163,179,.13); stroke:var(--cool);} .n-cool .d-title{fill:#C6D5DF;}
+  .n-xde rect{fill:rgba(139,123,216,.15); stroke:var(--violet);} .n-xde .d-title{fill:#BCB1EE;}
+
+  /* council role rows */
+  .roles{margin-top:30px; border:1px solid var(--line); border-radius:14px; overflow:hidden;}
+  .r-row{display:grid; grid-template-columns:230px 1fr; gap:20px; padding:15px 22px;
+    border-top:1px solid var(--line); font-size:15px; align-items:baseline;}
+  .r-row:first-child{border-top:none; background:var(--surface); font-family:var(--mono); font-size:11px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--text-mute);}
+  .r-row .r-name{color:var(--text); font-weight:500;}
+  .r-row .r-owns{color:var(--text-dim);}
+
+  /* scope columns */
+  .scope-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:32px;}
+  .scope-col{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px 26px;}
+  .scope-col h3{font-size:16px; font-family:var(--mono); font-weight:500; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--text-dim); margin-bottom:14px;}
+  .scope-col ul{margin:0; padding:0; list-style:none;}
+  .scope-col li{padding:9px 0 9px 26px; position:relative; font-size:15.5px; color:#CBD6DE; border-top:1px solid var(--line);}
+  .scope-col li:first-child{border-top:none;}
+  .scope-col li::before{content:""; position:absolute; left:2px; top:16px; width:9px; height:9px;}
+  .scope-col.done li::before{background:var(--accent); clip-path:polygon(14% 44%,0 65%,45% 100%,100% 20%,82% 6%,43% 68%);}
+  .scope-col.open li::before{border:1.5px solid var(--warm); border-radius:50%; top:15px;}
+
+  /* open decisions */
+  .decisions{margin-top:34px; display:flex; flex-direction:column; gap:12px;}
+  .decision{display:grid; grid-template-columns:44px 1fr; gap:18px; background:var(--surface);
+    border:1px solid var(--line); border-left:3px solid var(--warm); border-radius:0 12px 12px 0; padding:20px 24px;}
+  .decision .dn{font-family:var(--mono); font-size:13px; color:var(--warm); padding-top:2px;}
+  .decision h3{font-size:16.5px; margin-bottom:7px; line-height:1.3;}
+  .decision p{margin:0; font-size:14.5px; color:var(--text-dim); line-height:1.65;}
+
+  footer{padding:44px 0 60px;}
+  footer p{color:var(--text-mute); font-size:14px; font-family:var(--mono); letter-spacing:.03em; margin:0;}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:none;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px;}
+
+  @media (max-width:900px){
+    .grid{grid-template-columns:1fr 1fr;}
+    .principles,.scope-grid{grid-template-columns:1fr;}
+    .cat-row{grid-template-columns:1fr 118px 108px; gap:12px;}
+    .cat-row .cat-note{grid-column:1 / -1; padding-top:2px;}
+  }
+  @media (max-width:560px){
+    body{font-size:16px;}
+    .grid{grid-template-columns:1fr;}
+    .cat-row{grid-template-columns:1fr auto; padding:13px 15px;}
+    .r-row{grid-template-columns:1fr; gap:6px; padding:14px 16px;}
+    .tier{grid-template-columns:1fr; gap:12px; border-radius:0 0 14px 14px;}
+    .decision{grid-template-columns:1fr; gap:8px;}
+    section{padding:56px 0;}
+    .hero-inner{padding:60px 0 50px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important; scroll-behavior:auto !important;}
+    .reveal{opacity:1; transform:none;}
+  }
+  @media print{
+    :root{
+      --bg:#FFFFFF; --bg-2:#F4F7F9; --surface:#F5F8FA; --surface-2:#ECF1F4;
+      --line:#D4DDE3; --line-2:#C3CED6;
+      --text:#14212B; --text-dim:#43535F; --text-mute:#63727E;
+      --accent:#15629C; --accent-dim:#0E4670;
+      --hot:#C4552B; --warm:#A97C16; --cool:#566C7B; --arrow:#6B7A86; --violet:#5B4CA8;
+    }
+    *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; transition:none !important; animation:none !important; }
+    html,body{ background:#FFFFFF !important; color:var(--text) !important; }
+    .reveal{ opacity:1 !important; transform:none !important; }
+    .hero{ background:linear-gradient(180deg,#EEF3F6 0%, #FFFFFF 100%) !important; }
+    .plan-bg{ display:none !important; }
+    .lead-copy p,.callout p,.scope-col li{ color:#28323B !important; }
+    .d-title,.n-in .d-title,.n-serve .d-title,.n-hot .d-title,.n-warm .d-title,.n-cool .d-title,.n-xde .d-title{ fill:#16222E !important; }
+    .d-zone{ fill:rgba(0,0,0,.02) !important; }
+    @page{ margin:12mm; }
+    section{ padding:22px 0 !important; }
+    .card,.principle,.plat,.cat-row,.diagram-block,.callout,.tier,.decision,.scope-col,.r-row,.ladder-note{ break-inside:avoid; page-break-inside:avoid; }
+    h1,h2,h3{ break-after:avoid; page-break-after:avoid; }
+    .diagram{ max-width:100%; height:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="plan-bg" viewBox="0 0 900 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <pattern id="planpat" width="96" height="96" patternUnits="userSpaceOnUse" patternTransform="scale(1.25)">
+        <path d="M8 28 V8 H28 M68 8 H88 V28 M88 68 V88 H68 M28 88 H8 V68"
+              fill="none" stroke="#4AA8F0" stroke-width="1.1" stroke-linecap="square" opacity="0.30"/>
+        <path d="M48 10 V26 M48 70 V86 M10 48 H26 M70 48 H86"
+              fill="none" stroke="#4AA8F0" stroke-width="0.6" opacity="0.15"/>
+        <rect x="41" y="41" width="14" height="14" fill="none" stroke="#4AA8F0" stroke-width="0.7" opacity="0.20"/>
+        <circle cx="48" cy="48" r="1.6" fill="#4AA8F0" opacity="0.30"/>
+      </pattern>
+    </defs>
+    <rect width="900" height="520" fill="url(#planpat)"/>
+  </svg>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">Architecture reference</div>
+    <h1 style="margin-top:20px;">Six platforms, <span class="accent">three superapps</span>, one contract standard.</h1>
+    <p class="lede">The technical counterpart to the organization design. Every capability is a product a team can adopt without a meeting, and every application portfolio converges on a single superapp rather than a catalog of small ones.</p>
+    <div class="chips">
+      <span class="chip"><span class="dot"></span>4 capability platforms</span>
+      <span class="chip"><span class="dot"></span>3 superapps</span>
+      <span class="chip"><span class="dot"></span>1 productization standard</span>
+      <span class="chip"><span class="dot"></span>Council-adjudicated seams</span>
+    </div>
+  </div>
+</header>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">01</span><h2>The thesis</h2></div>
+    <div class="lead-copy" style="margin-top:24px;">
+      <p>The organization design argued that flatness only works when coordination moves out of the reporting chain and into written contracts between teams. This document is the other half of that argument. <strong>The contracts have to be real technical artifacts</strong>, not statements of intent, or the flat structure has nothing to stand on and the escalation path grows back within two quarters.</p>
+      <p>Three commitments follow from that, and everything else in this document is mechanics.</p>
+      <p><strong>Capability platforms, not component teams.</strong> Six platforms, each owning a coherent set of capabilities and each held to one productization standard. The measure of success is not how many services exist. It is how quickly a new application can be assembled from services that already exist, without the assembling team negotiating an integration for each one.</p>
+      <p><strong>One superapp per application portfolio.</strong> Each of the three portfolios converges on a single application with one shell, one navigation model, and one identity and classification story. Not a family of small applications that happen to share a login. The superapp is the unit of user experience; the capabilities inside it are the unit of delivery.</p>
+      <p><strong>Experience is a vertical, not a top layer.</strong> UXP is drawn beside the stack rather than on top of it, because a usable interface depends on things every layer either provides or fails to provide: result shapes that can stream, confidence values that are calibrated, provenance retrievable per artifact, freshness a map can display, queue semantics a reviewer can act on. Treating experience as the last layer means discovering at integration time that the platforms underneath cannot support it, which is the point at which it is most expensive to fix.</p>
+      <p><strong>The architecture mirrors the org, deliberately.</strong> Conway's Law says the architecture will mirror the org whether or not anyone intends it. So the platform boundaries are drawn to match the portfolio boundaries: central engineering owns the five backend platforms, experience design engineering owns the experience platform, and each application portfolio owns one superapp. Where those two maps diverge, one of them is wrong and the divergence is a council item.</p>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">02</span><h2>Engineering principles</h2></div>
+    <p class="sec-sub">Six principles that govern how this office builds, operates, and grows. These are not aspirational values. They are behavioral commitments, and every engineering decision should be traceable to at least one of them. They are ordered by architectural priority, not importance. All six apply at all times, and when they appear to conflict the mission context decides which takes precedence, in writing.</p>
+
+    <div class="principles">
+      <div class="principle" style="--pc:var(--accent);">
+        <div class="pn">Principle 01 · Security and resiliency</div>
+        <h3>Build to endure, engineer to protect</h3>
+        <p class="tag">We treat security and resiliency as a first principle, embedded in every decision, design, and deployment.</p>
+        <p>Embed zero trust, confidentiality, and availability into every layer of design, development, and deployment. Engineer for high availability, graceful degradation, and redundancy, <b>not as features but as structural requirements</b>.</p>
+        <p>Continuously adapt to stay ahead of threats. Security posture is never static. Threat modeling, dependency review, and adversarial thinking are standing activities, not periodic audits.</p>
+      </div>
+
+      <div class="principle" style="--pc:var(--hot);">
+        <div class="pn">Principle 02 · Accountability</div>
+        <h3>Mission-driven accountability</h3>
+        <p class="tag">We own our impact and outcomes: technical, operational, and ethical.</p>
+        <p>Engineers are responsible for the mission impact, security, and operational behavior of their work. <b>Ownership does not end at code merge.</b> It extends to production behavior, downstream effects, and mission consequences.</p>
+        <p>Acknowledge mistakes openly through blameless postmortems and use telemetry to drive continuous learning, resilience, and improvement. A blame-free culture requires a truth-seeking culture; both must be present.</p>
+      </div>
+
+      <div class="principle" style="--pc:var(--violet);">
+        <div class="pn">Principle 03 · Human-centered</div>
+        <h3>Human-centered design and engineering</h3>
+        <p class="tag">We build with and for the user.</p>
+        <p>Involve end users and domain experts early and often so solutions align with real mission needs. <b>User research and usability testing are engineering activities, not design afterthoughts</b>, and they belong in the delivery process alongside architecture review and code review.</p>
+        <p>Prioritize intuitive, usable designs and adapt continuously based on user feedback and evolving requirements. A system that works correctly but cannot be used effectively has failed its mission.</p>
+      </div>
+
+      <div class="principle" style="--pc:var(--warm);">
+        <div class="pn">Principle 04 · Tradecraft</div>
+        <h3>Tradecraft mastery</h3>
+        <p class="tag">We grow talent as deliberately as we build technology.</p>
+        <p>Promote lifelong learning and invest in ongoing mastery of secure development, AI and ML ethics, leadership, and core tradecraft. Engineers who stop learning produce systems that stop improving, so <b>skill development is a delivery requirement, not a benefit</b>.</p>
+        <p>Encourage mentorship, knowledge sharing, and the development of sound technical and mission judgment. Expertise that lives only in individuals is a single point of failure. Documenting, pairing, and teaching are engineering obligations.</p>
+      </div>
+
+      <div class="principle" style="--pc:var(--cool);">
+        <div class="pn">Principle 05 · Trustworthy autonomy</div>
+        <h3>Trustworthy autonomy</h3>
+        <p class="tag">We augment, not replace, human judgment.</p>
+        <p>Ensure all AI and automation are explainable, traceable, and always under meaningful human control, with built-in trust calibration and human-in-the-loop oversight. <b>Automation that cannot be interrogated cannot be trusted, and automation that cannot be trusted cannot be fielded.</b></p>
+        <p>Proactively test, challenge, and validate autonomy through red teaming, adversarial exercise, and bias mitigation. Trustworthy systems are proven, not assumed.</p>
+      </div>
+
+      <div class="principle" style="--pc:var(--accent-dim);">
+        <div class="pn">Principle 06 · Modularity</div>
+        <h3>Loosely coupled, highly aligned</h3>
+        <p class="tag">We engineer capabilities that evolve with mission.</p>
+        <p>Use open standards, well-documented APIs, and modular components to enable agility, collaboration, and reuse across domains and missions. <b>Every interface is a contract, and contracts must be designed for extension rather than for today's only consumer.</b></p>
+        <p>Design systems to avoid lock-in and to adapt quickly to adversarial threats, shifting priorities, and emerging technology. The threat landscape, the technology landscape, and the mission will all change. The architecture has to change with them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">03</span><h2>The architecture council</h2></div>
+    <p class="sec-sub">With no division tier, there is no natural place for a decision that crosses a portfolio boundary to land. The council is that place, and it is the only one.</p>
+
+    <div class="lead-copy" style="margin-top:24px;">
+      <p>The council is <strong>membership, not authority over people</strong>. Nobody reports to it. Its power is that it owns the record: an architecture decision crossing a seam is not made until it is written as an ADR and accepted here. That is a deliberately narrow mandate. A council that reviews everything becomes an approval gate, and an approval gate is the layer this design removed.</p>
+    </div>
+
+    <div class="roles">
+      <div class="r-row"><span>Membership</span><span>Standing seat</span></div>
+      <div class="r-row"><span class="r-name">Technical director</span><span class="r-owns">Chairs. Holds office-wide technical authority and decides when the room cannot. Deliberately carries no delivery schedule, because a chair who owns a deadline cannot adjudicate a trade-off against it.</span></div>
+      <div class="r-row"><span class="r-name">Principal engineers</span><span class="r-owns">Five seats, one per portfolio. Each brings the decisions their portfolio cannot make alone, drafts most of the ADRs, and carries council decisions back as binding within their portfolio.</span></div>
+      <div class="r-row"><span class="r-name">Platform product manager</span><span class="r-owns">One seat. Represents the consumers of the shared platforms and holds the productization standard, including the authority to declare a service Beta rather than Productized.</span></div>
+      <div class="r-row"><span class="r-name">Invited tech leads</span><span class="r-owns">The tech lead for the platform or superapp area an item touches attends for that item. Not standing members. Seven standing seats is already close to the size at which a room stops deciding things.</span></div>
+    </div>
+
+    <div class="scope-grid">
+      <div class="scope-col done">
+        <h3>The council decides</h3>
+        <ul>
+          <li>Which platform owns a capability when two of them could plausibly claim it</li>
+          <li>Whether a shared model (document, entity, geospatial feature) forks or stays canonical</li>
+          <li>Reuse tier disputes, including a downgrade that looks like cost avoidance</li>
+          <li>Whether a service may be represented as reusable, and at what declared maturity</li>
+          <li>Deprecation windows and supported version counts that affect multiple consumers</li>
+          <li>Cross-cutting standards: contract format, error semantics, telemetry, classification handling</li>
+          <li>The experience requirements a platform contract must carry, since those cross every boundary</li>
+          <li>How the office consumes an external dependency, so five platforms integrate once rather than five times</li>
+          <li>Escalated waivers where the compensating measure is contested</li>
+        </ul>
+      </div>
+      <div class="scope-col open">
+        <h3>The council does not decide</h3>
+        <ul>
+          <li>Anything inside a single portfolio's boundary; that is the principal engineer's call</li>
+          <li>Implementation choices behind a stable contract, which are the owner's private concern</li>
+          <li>Delivery sequencing or schedule, which belongs to the program leads</li>
+          <li>Staffing, hiring, or performance, which belong to the reporting line</li>
+          <li>Whether a superapp should ship a given feature</li>
+          <li>Routine adoption of a productized service, which requires no permission at all</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">Cadence</span>
+      <span>Biweekly, with a published agenda and a written decision record. An item arrives with a proposed ADR, not with a discussion topic. If a decision cannot be made in the room, the council names an owner and a date rather than deferring to the next meeting, because a standing item that recurs three times has become a layer.</span>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">04</span><h2>Technical leadership and authority</h2></div>
+    <p class="sec-sub">Who can say yes alone, who has to be asked first, and who has no authority at all by design. In a flat organization this is written down or it defaults to whoever speaks with the most confidence in the room.</p>
+
+    <div class="lead-copy" style="margin-top:24px;">
+      <p>Three technical roles, and deliberately no more. At this size a longer ladder buys coordination cost rather than capacity: every additional named authority is another person who has to be consulted, and the office is not large enough for that to pay for itself. <strong>Technical authority is concentrated in a small number of named individuals rather than distributed through committees</strong>, and each of the three has a boundary that can be stated in one sentence.</p>
+      <p>The <strong>technical director</strong> holds office-wide technical authority and chairs the council. The <strong>principal engineer</strong> is the technical authority for one portfolio, pairs with that portfolio's program lead, and owns its architecture and its ADR register. The <strong>tech lead</strong> owns one platform or one superapp capability area: its contract, its implementation, and its operational behavior. Central engineering's principal covers five platforms with a tech lead on each; experience design engineering's principal covers UXP; each application portfolio's principal covers one superapp.</p>
+      <p>What none of these roles owns is the schedule. That belongs to the program lead in each portfolio, and the pairing is deliberate. <strong>A technical authority who also owns a delivery date will eventually decide a trade-off in favor of the date and call it engineering judgment</strong>, and nobody in the room will be positioned to say otherwise.</p>
+    </div>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">E</span>
+        <div><h3>Three roles, one council</h3>
+        <p>The technical director and the five principals are the standing council, which is why the council is small enough to decide things in an hour. Tech leads own their platform or capability area outright and attend for the items that touch them. Note what this collapses: because central engineering holds five of the six platforms, most platform-to-platform disputes are settled by one principal without reaching the council at all.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 330" role="img" aria-label="A technical director above five principal engineers, one per portfolio, who together form the architecture council, with tech leads for each platform and superapp capability area beneath them.">
+          <defs><marker id="ar-e" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <rect class="d-zone" x="30" y="14" width="840" height="182" rx="14"/>
+          <text class="d-zonelabel" x="48" y="36">ARCHITECTURE COUNCIL</text>
+          <g class="n-xde"><rect class="d-box" x="340" y="26" width="220" height="58" rx="10"/><text class="d-title" x="450" y="52" text-anchor="middle">Technical director</text><text class="d-sub" x="450" y="72" text-anchor="middle">chairs the council</text></g>
+          <line class="d-arrow" x1="430" y1="84" x2="130" y2="126" marker-end="url(#ar-e)"/>
+          <line class="d-arrow" x1="440" y1="84" x2="290" y2="126" marker-end="url(#ar-e)"/>
+          <line class="d-arrow" x1="450" y1="84" x2="450" y2="126" marker-end="url(#ar-e)"/>
+          <line class="d-arrow" x1="460" y1="84" x2="610" y2="126" marker-end="url(#ar-e)"/>
+          <line class="d-arrow" x1="470" y1="84" x2="770" y2="126" marker-end="url(#ar-e)"/>
+          <g class="n-serve"><rect class="d-box" x="47" y="130" width="150" height="58" rx="9"/><text class="d-title" x="122" y="155" text-anchor="middle">Principal</text><text class="d-sub" x="122" y="174" text-anchor="middle">app portfolio 1</text></g>
+          <g class="n-serve"><rect class="d-box" x="211" y="130" width="150" height="58" rx="9"/><text class="d-title" x="286" y="155" text-anchor="middle">Principal</text><text class="d-sub" x="286" y="174" text-anchor="middle">app portfolio 2</text></g>
+          <g class="n-serve"><rect class="d-box" x="375" y="130" width="150" height="58" rx="9"/><text class="d-title" x="450" y="155" text-anchor="middle">Principal</text><text class="d-sub" x="450" y="174" text-anchor="middle">app portfolio 3</text></g>
+          <g class="n-xde"><rect class="d-box" x="539" y="130" width="150" height="58" rx="9"/><text class="d-title" x="614" y="155" text-anchor="middle">Principal</text><text class="d-sub" x="614" y="174" text-anchor="middle">design eng</text></g>
+          <g class="n-hot"><rect class="d-box" x="703" y="130" width="150" height="58" rx="9"/><text class="d-title" x="778" y="155" text-anchor="middle">Principal</text><text class="d-sub" x="778" y="174" text-anchor="middle">central eng</text></g>
+          <line class="d-arrow" x1="122" y1="200" x2="122" y2="230" marker-end="url(#ar-e)"/>
+          <line class="d-arrow" x1="286" y1="200" x2="286" y2="230" marker-end="url(#ar-e)"/>
+          <line class="d-arrow" x1="450" y1="200" x2="450" y2="230" marker-end="url(#ar-e)"/>
+          <line class="d-arrow" x1="614" y1="200" x2="614" y2="230" marker-end="url(#ar-e)"/>
+          <line class="d-arrow" x1="778" y1="200" x2="778" y2="230" marker-end="url(#ar-e)"/>
+          <g class="n-in"><rect class="d-box" x="47" y="234" width="806" height="62" rx="10"/><text class="d-title" x="450" y="261" text-anchor="middle">Tech leads</text><text class="d-sub" x="450" y="281" text-anchor="middle">one per platform or superapp capability area · owns the contract and the implementation</text></g>
+          <text class="d-sub" x="450" y="322" text-anchor="middle">six standing council seats · tech leads attend for their own items</text>
+        </svg>
+      </div>
+    </div>
+
+    <p class="sec-sub" style="margin-top:44px;">Decision rights, stated plainly. The last column is the one that gets skipped and the one that prevents most of the conflict.</p>
+
+    <div class="cat">
+      <div class="cat-row"><span>Role</span><span>Decides alone</span><span>Must consult</span><span>Has no authority over</span></div>
+      <div class="cat-row"><span class="cat-svc">Technical director</span><span class="cat-note">Office-wide technical standards. Chairs the council and decides when consensus is absent</span><span class="cat-note">The affected principals, before overriding any of them</span><span class="cat-note">Delivery schedule, staffing, and anything inside a portfolio that does not cross a seam</span></div>
+      <div class="cat-row"><span class="cat-svc">Principal engineer</span><span class="cat-note">Everything inside their portfolio, including its ADR register and which platform patterns apply to it</span><span class="cat-note">The council whenever a decision constrains another portfolio. Their program lead whenever a decision moves a date</span><span class="cat-note">Another portfolio's internals, and their own portfolio's schedule, which is the program lead's</span></div>
+      <div class="cat-row"><span class="cat-svc">Tech lead</span><span class="cat-note">Everything behind a stable contract: implementation, internal design, and anything reversible within a sprint</span><span class="cat-note">Their principal before changing a published contract. Consumers ahead of any breaking change, through the announced channel</span><span class="cat-note">Cross-portfolio interfaces, and whether a consumer adopts. A productized service needs no permission to consume and grants none</span></div>
+      <div class="cat-row"><span class="cat-svc">Platform product manager</span><span class="cat-note">Declared reuse tier and maturity for shared services, including lowering one</span><span class="cat-note">The tech lead before lowering a maturity level, so it is not a surprise</span><span class="cat-note">Implementation, and sequencing inside a platform team's backlog</span></div>
+    </div>
+
+    <p class="sec-sub" style="margin-top:44px;">How it works in practice. Four situations that recur, and who moves first in each.</p>
+
+    <div class="grid">
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4v16"/><path d="M6 8H4v8h2M18 8h2v8h-2"/></svg>
+        <h3>Two platforms claim a capability</h3>
+        <p>Two tech leads disagree. If both platforms sit in central engineering, which covers five of the six, their principal decides it and records a portfolio ADR. Only when the dispute crosses portfolios does it reach the council, and then the technical director decides if the principals cannot.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h13"/><path d="M13 7l5 5-5 5"/><path d="M20 4v16"/></svg>
+        <h3>A contract has to break</h3>
+        <p>The tech lead decides that it breaks and owns the migration. They do not decide the notice period or the number of supported versions, which are office-wide standards. Consumers are told through the announced channel rather than individually, and the ADR names the last supported date.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l9 16H3z"/><path d="M12 9v4M12 16v.01"/></svg>
+        <h3>An incident crosses platforms</h3>
+        <p>Site reliability holds first and second line and coordinates. The tech lead of each affected platform takes their own third line; nobody triages a system they do not own. The principal of the portfolio that felt it owns the customer conversation, and the postmortem is a ritual rather than a hearing.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        <h3>A capability has no home</h3>
+        <p>The requesting team builds it locally rather than waiting, and the platform product manager opens the promotion question. Whether it becomes a platform service is a council decision. What is not acceptable is a team quietly owning a capability three portfolios depend on.</p>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <h3>Four ways technical authority fails</h3>
+      <p><strong>The technical director decides things principals should own.</strong> Usually because being asked feels like being helpful. Every such decision teaches the portfolio to ask again, and within two quarters the council agenda is full of portfolio business and the flat structure has grown a layer at the top.</p>
+      <p><strong>Principals escalate to avoid the blame.</strong> The inverse failure, and harder to see because it looks like diligence. An item that arrives at council with no recommendation attached is the signal, and the correct response is to return it with the principal named as owner.</p>
+      <p><strong>Central engineering's principal becomes the bottleneck.</strong> One person covering five platforms is the widest technical span in the office, and if every platform decision routes through them, the five tech leads hold authority in name only. The defense is that the tech lead decides everything behind their contract, and the principal has to visibly refuse to take those decisions back.</p>
+      <p><strong>Tech lead ownership is a name on a wiki page.</strong> Somebody is listed as owner with no time allocated to the role, so consumers get no answer and the platform gets worked around rather than adopted. Ownership without capacity is worse than no owner, because it looks resolved in the registry.</p>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">The test</span>
+      <span>Take any decision made in the last month that affected more than one team and ask who made it. If the answer is a named person at the smallest scope that contained the decision, the model is working. If the answer is a meeting, or the technical director for something a principal could have decided, or nobody can quite say, authority has drifted back to whoever was most confident in the room, which is the failure mode the whole structure exists to prevent.</span>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">05</span><h2>Decisions and the record</h2></div>
+    <p class="sec-sub">How an architecture decision actually gets made, written down, and made binding. This is the operating procedure behind the council, and it is the mechanism that lets a flat organization hold a shared architecture without a division tier to enforce one.</p>
+
+    <div class="lead-copy" style="margin-top:24px;">
+      <p>In an organization with layers, the architecture lives partly in people's heads and gets enforced by whoever sits above the disagreement. Remove the layers and that enforcement disappears with them. What replaces it is <strong>the written record</strong>: an architecture decision record is not documentation of a decision, it is the decision. A choice that is not written down has not been made, however clearly it was agreed in a room.</p>
+      <p>This matters more here than in most places because of turnover and time. A platform contract written in 2026 will be consumed in 2029 by engineers who were not in the room and cannot ask anyone who was. <strong>The ADR register is the only artifact that survives the people</strong>, which is why an accepted ADR is never edited and never deleted. It is superseded by a new one that says what changed and why, and the old reasoning stays readable.</p>
+    </div>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">D</span>
+        <div><h3>How an ADR moves</h3>
+        <p>Anyone may draft. A principal engineer sponsors it into the register as Proposed, which is what gets it a slot rather than a hallway conversation. The council accepts, rejects, or returns it with a named owner and a date. Returned is a real outcome and not a polite rejection, but a decision returned three times has become a standing item, and a standing item is a layer.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 336" role="img" aria-label="ADR lifecycle: a draft is sponsored into the register as proposed, reviewed by the council, and then accepted, returned with a named owner and date, or rejected. An accepted decision is later superseded rather than edited.">
+          <defs><marker id="ar-d" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <g class="n-in"><rect class="d-box" x="40" y="132" width="160" height="56" rx="9"/><text class="d-title" x="120" y="156" text-anchor="middle">Draft</text><text class="d-sub" x="120" y="175" text-anchor="middle">anyone may write</text></g>
+          <line class="d-arrow" x1="200" y1="160" x2="230" y2="160" marker-end="url(#ar-d)"/>
+          <g class="n-in"><rect class="d-box" x="232" y="132" width="160" height="56" rx="9"/><text class="d-title" x="312" y="156" text-anchor="middle">Proposed</text><text class="d-sub" x="312" y="175" text-anchor="middle">sponsored entry</text></g>
+          <line class="d-arrow" x1="392" y1="160" x2="422" y2="160" marker-end="url(#ar-d)"/>
+          <g class="n-xde"><rect class="d-box" x="424" y="132" width="160" height="56" rx="9"/><text class="d-title" x="504" y="156" text-anchor="middle">Council review</text><text class="d-sub" x="504" y="175" text-anchor="middle">biweekly, 15 min</text></g>
+          <line class="d-arrow" x1="584" y1="152" x2="614" y2="60" marker-end="url(#ar-d)"/>
+          <line class="d-arrow" x1="584" y1="160" x2="614" y2="194" marker-end="url(#ar-d)"/>
+          <line class="d-arrow" x1="584" y1="168" x2="614" y2="264" marker-end="url(#ar-d)"/>
+          <g class="n-serve"><rect class="d-box" x="616" y="30" width="200" height="48" rx="9"/><text class="d-title" x="716" y="50" text-anchor="middle">Accepted</text><text class="d-sub" x="716" y="68" text-anchor="middle">binding, in the register</text></g>
+          <line class="d-arrow" x1="716" y1="78" x2="716" y2="96" marker-end="url(#ar-d)"/>
+          <g class="n-cool"><rect class="d-box" x="616" y="98" width="200" height="48" rx="9"/><text class="d-title" x="716" y="118" text-anchor="middle">Superseded</text><text class="d-sub" x="716" y="136" text-anchor="middle">replaced, never deleted</text></g>
+          <g class="n-warm"><rect class="d-box" x="616" y="170" width="200" height="48" rx="9"/><text class="d-title" x="716" y="190" text-anchor="middle">Returned</text><text class="d-sub" x="716" y="208" text-anchor="middle">named owner and date</text></g>
+          <g class="n-hot"><rect class="d-box" x="616" y="240" width="200" height="48" rx="9"/><text class="d-title" x="716" y="260" text-anchor="middle">Rejected</text><text class="d-sub" x="716" y="278" text-anchor="middle">reasoning recorded</text></g>
+          <text class="d-sub" x="450" y="322" text-anchor="middle">an accepted record is superseded, never edited</text>
+        </svg>
+      </div>
+    </div>
+
+    <p class="sec-sub" style="margin-top:44px;">What an ADR contains. Short is a feature: one page, readable in five minutes, or it will not be read in three years when it matters most.</p>
+
+    <div class="grid">
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+        <h3>Context</h3>
+        <p>The forces in play at the time: the constraint, the deadline, the thing that was not yet known. This is the field that ages best and the one most often skipped. A future reader needs to know what you did not know.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h13"/><path d="M13 7l5 5-5 5"/></svg>
+        <h3>Decision</h3>
+        <p>One paragraph in active voice, stated as a commitment rather than a preference. "We will" rather than "we should". If it takes more than a paragraph, it is more than one decision and should be split.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v18M5 8l7-5 7 5"/><path d="M5 16l7 5 7-5"/></svg>
+        <h3>Alternatives</h3>
+        <p>What else was considered and why it lost. This is what prevents the same argument from being reopened annually by someone who assumes the obvious option was never examined.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l5-6 4 4 5-8 4 5"/><path d="M3 20h18"/></svg>
+        <h3>Consequences</h3>
+        <p>What becomes easier and what becomes harder, including the costs accepted knowingly. An ADR with only benefits listed is advocacy, and it will be read that way by whoever inherits the cost.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg>
+        <h3>Seam and owner</h3>
+        <p>Which platforms or portfolios this constrains, and the named person accountable for it. A decision that binds three teams without naming who owns it will be relitigated by all three.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7z"/><path d="M9 12l2 2 4-4"/></svg>
+        <h3>Status and date</h3>
+        <p>Proposed, accepted, returned, rejected, or superseded, with the date and the superseding number where applicable. Status is the field consumers check first, so it is never left stale.</p>
+      </div>
+    </div>
+
+    <div class="scope-grid">
+      <div class="scope-col done">
+        <h3>Needs a council ADR</h3>
+        <ul>
+          <li>Anything that crosses a platform or portfolio seam</li>
+          <li>A change to a published contract that consumers depend on</li>
+          <li>Which platform owns a capability two of them could claim</li>
+          <li>A shared model forking, or declining to fork</li>
+          <li>A reuse tier or maturity declaration that is contested</li>
+          <li>Any choice that constrains another team's options without their agreement</li>
+          <li>A decision that would be expensive to reverse in a year</li>
+        </ul>
+      </div>
+      <div class="scope-col open">
+        <h3>Needs a portfolio ADR, or none</h3>
+        <ul>
+          <li>Implementation choices behind a stable contract, which are the owner's alone</li>
+          <li>Library and framework selection inside one team's boundary</li>
+          <li>Anything reversible in a sprint by the tech lead who chose it</li>
+          <li>Schema changes internal to one service with no external consumer</li>
+          <li>Adopting a productized service, which requires no permission from anyone</li>
+          <li>Routine sequencing, which belongs to the program leads</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">Two registers</span>
+      <span>Portfolio ADRs are owned by the principal engineer and kept in the portfolio's own register. Cross-portfolio ADRs go to the council register. The bar for quality is identical; only the audience differs. A portfolio ADR that turns out to constrain another portfolio gets promoted rather than rewritten, and the promotion is itself a useful signal that a seam was drawn in the wrong place.</span>
+    </div>
+
+    <p class="sec-sub" style="margin-top:44px;">How the meeting runs. The format exists to make the meeting short, because a council that runs long stops being attended by the people whose attendance makes it authoritative.</p>
+
+    <div class="roles">
+      <div class="r-row"><span>Stage</span><span>What happens</span></div>
+      <div class="r-row"><span class="r-name">Intake, ongoing</span><span class="r-owns">Anyone drafts. A principal engineer sponsors it into the register as Proposed. An item without a sponsor is not on the agenda, which is the filter that keeps the council from becoming a forum.</span></div>
+      <div class="r-row"><span class="r-name">Pre-read, 48 hours out</span><span class="r-owns">The agenda and the full text of every proposed ADR are published. Members read beforehand. Nothing is presented in the room, because presentation consumes the time that deliberation needs.</span></div>
+      <div class="r-row"><span class="r-name">Position round</span><span class="r-owns">Each affected owner states their position and their objection in under two minutes. Objections are stated before discussion opens, so the discussion addresses the real disagreement rather than discovering it late.</span></div>
+      <div class="r-row"><span class="r-name">Deliberation, timeboxed</span><span class="r-owns">Fifteen minutes per item. The chair holds the clock. Running over is a signal that the ADR was not ready, not that the item deserves more time today.</span></div>
+      <div class="r-row"><span class="r-name">Decision</span><span class="r-owns">Accept, reject, or return with a named owner and a date. Consensus is preferred and not required. Where it is absent, the chair decides and the dissent is recorded in the ADR rather than argued again later.</span></div>
+      <div class="r-row"><span class="r-name">Disagree and commit</span><span class="r-owns">Once accepted, the decision binds every portfolio including those that objected. Continuing to build against a rejected alternative is not a technical disagreement, it is a governance failure, and it is handled as one.</span></div>
+      <div class="r-row"><span class="r-name">Publication, same day</span><span class="r-owns">The record is updated before anyone leaves. A decision that exists only in someone's notes for a week is a decision that half the office will hear about incorrectly first.</span></div>
+    </div>
+
+    <div class="callout warn">
+      <h3>Four ways this rots</h3>
+      <p><strong>The ADR becomes a design document.</strong> Twelve pages, three diagrams, and an implementation plan. Nobody reads it, so nobody can cite it, so the decision effectively was not recorded. One page, or split it.</p>
+      <p><strong>The ADR is written after the fact.</strong> A team builds it, then writes the ADR to legitimize what already shipped. This is worse than no record, because it makes the register look authoritative while documenting outcomes rather than decisions. The tell is an ADR with no alternatives section worth reading.</p>
+      <p><strong>The council becomes an approval gate.</strong> Items arrive that belong to one portfolio, the agenda grows, and teams start waiting on it. The threshold above is the defense, and the chair enforcing it is the mechanism. An item that should never have reached the council is returned as out of scope rather than decided as a courtesy.</p>
+      <p><strong>Returned items accumulate.</strong> A comfortable council returns everything difficult with a new date. Three returns on the same item means the council cannot decide it, and the correct response is to escalate it out rather than to schedule it a fourth time.</p>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">The test</span>
+      <span>A year in, pick a contract that three teams depend on and ask a new engineer why it works that way. If they can find the answer in the register in under five minutes without asking anyone, the record is doing its job. If the answer is that someone would have to ask a specific person, the architecture is living in that person's head, and the flat structure is one departure away from losing it.</span>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">06</span><h2>The productization standard</h2></div>
+    <p class="sec-sub">The rule this enforces: if more than one application may need a capability, or if any quick-reaction application may need it, that capability is delivered as a product a team can adopt without a meeting. Building the capability is not sufficient. Productizing it is the requirement.</p>
+
+    <div class="callout">
+      <h3>The adoption test</h3>
+      <p>A team that has never contacted the owning team can adopt the service in production without a meeting.</p>
+      <p>Every requirement below serves that test. Where a requirement does not serve it, the requirement is wrong. Where the test is met and a requirement is technically unmet, the owner may record a waiver. The test is the intent; the requirements are its mechanics.</p>
+      <p>The gap between a service that functions and a service that is reusable is measured in the time it takes a team that has never spoken to the owning team to make a successful call in production. When that time is short, application teams shop the catalog and build fast. When it is long, they quietly rebuild the capability themselves, and the platform investment is wasted twice: once to build the service nobody adopts, and again in every application that reimplements it.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h10M4 12h16M4 17h7"/><path d="M18 5l3 3-3 3"/></svg>
+        <h3>Contract</h3>
+        <p>The interface is the product. Documented interface generated from or verified against the running service, honest semantic versioning, an explicit compatibility guarantee, a stated deprecation policy, a stable error contract, and documented idempotency and retry semantics for every mutating operation.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v10"/><path d="M8 9l4 4 4-4"/><path d="M4 17v3h16v-3"/></svg>
+        <h3>Self-service onboarding</h3>
+        <p>The highest-leverage requirement and the one most often skipped. Credentials without a ticket to a person, a copyable quickstart to a first successful call, a listing in the registry with tier and maturity and owner, and a sandbox with no production consequences.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></svg>
+        <h3>Reference implementation</h3>
+        <p>A working example client in the platform's primary languages, tested in CI so it cannot silently rot. Authentication, pagination, async submission and polling, streaming, error handling, and retry demonstrated in runnable code rather than described in prose.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 14l4-5 4 4 4-7 6 8"/><path d="M3 19h18"/></svg>
+        <h3>Operational contract</h3>
+        <p>Published availability and latency SLOs at p50, p95, and p99 per operation. Documented degraded-mode behavior, because silent queueing and silent failure are prohibited. A subscribable status signal, documented rate limits with a path to more, and a change channel.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/></svg>
+        <h3>Ownership and support</h3>
+        <p>An orphaned service is not adopted, it is worked around. A named owning team in the registry, a support channel with a documented response expectation, an escalation path for consumer-affecting incidents, and a stated lifecycle commitment.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7z"/><path d="M9 12l2 2 4-4"/></svg>
+        <h3>Waivers</h3>
+        <p>Where a service meets the adoption test but cannot meet a specific requirement, an air-gapped enclave that cannot host a public status page for instance, the owner records the requirement, the reason, and the compensating measure. Waivers are visible to consumers, and they are for genuine constraints rather than for skipping the work.</p>
+      </div>
+    </div>
+
+    <p class="sec-sub" style="margin-top:44px;">Three reuse tiers fulfill the rule at three weights. The owner selects by how much genuinely varies between consumers, not by preference.</p>
+
+    <div class="ladder">
+      <div class="tier" style="--tc:var(--accent);">
+        <div class="zoom"><span class="z">Productized service</span><span class="lbl">Full standard</span></div>
+        <div>
+          <div class="cadence">RUNNING · NETWORK-ACCESSIBLE · SLO</div>
+          <p class="desc">Use when the capability is broadly reused, is consumed by quick-reaction applications, or holds state that must be shared. <b>The full standard applies: contract, onboarding, reference client, operational contract, and ownership.</b></p>
+        </div>
+      </div>
+      <div class="tier" style="--tc:var(--cool);">
+        <div class="zoom"><span class="z">Shared library</span><span class="lbl">Contract + docs</span></div>
+        <div>
+          <div class="cadence">VERSIONED CODE TEAMS IMPORT</div>
+          <p class="desc">Use when the logic is common but needs no shared runtime or shared state. Contract as API surface with honest semver, published and installable and documented, reference usage, and named ownership. <b>SLO and status page do not apply.</b></p>
+        </div>
+      </div>
+      <div class="tier" style="--tc:var(--warm);">
+        <div class="zoom"><span class="z">Reference pattern</span><span class="lbl">Copy per app</span></div>
+        <div>
+          <div class="cadence">DOCUMENTED APPROACH + WORKING EXAMPLE</div>
+          <p class="desc">Use when the capability is common in shape but genuinely differs per application, so a central runtime would constrain more than it helps. Documentation, a working example, and ownership of the pattern. <b>The consuming team copies and owns their instance.</b></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">Both failures</span>
+      <span>Downgrading a broadly consumed capability to a reference pattern to avoid the productization cost is a failure of this standard, not an application of it. Upgrading a two-consumer library into a service with an SLO nobody needs is the same failure from the other side. The tier is a deliberate decision recorded in the registry, and a contested one is a council item.</span>
+    </div>
+
+    <p class="sec-sub" style="margin-top:44px;">Maturity is orthogonal to tier. A service can be a productized-tier capability that has not yet reached productized maturity, and saying so plainly is the point.</p>
+
+    <div class="cat">
+      <div class="cat-row" style="grid-template-columns:150px 1fr 1.3fr;"><span>Level</span><span>Meaning</span><span>What a consumer should expect</span></div>
+      <div class="cat-row" style="grid-template-columns:150px 1fr 1.3fr;"><span class="pill p-beta">Experimental</span><span class="cat-note">Functions, contract not yet stable</span><span class="cat-note">Adopt only with the owner's direct involvement. Expect breaking changes without the full notice period. Not for quick-reaction applications.</span></div>
+      <div class="cat-row" style="grid-template-columns:150px 1fr 1.3fr;"><span class="pill p-beta">Beta</span><span class="cat-note">Contract stabilizing, onboarding partial</span><span class="cat-note">Adopt with awareness that some of the standard is unmet. The specific gaps are listed explicitly rather than implied.</span></div>
+      <div class="cat-row" style="grid-template-columns:150px 1fr 1.3fr;"><span class="pill p-prod">Productized</span><span class="cat-note">Meets the full standard for its tier</span><span class="cat-note">Adopt without a meeting. This is the bar the rule requires for any shared capability.</span></div>
+      <div class="cat-row" style="grid-template-columns:150px 1fr 1.3fr;"><span class="pill p-gap">Sunset</span><span class="cat-note">Being retired</span><span class="cat-note">Do not adopt. Migrate off by the stated date.</span></div>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">Honesty</span>
+      <span>A service that is honestly Beta is more useful than a service that is dishonestly Productized. The failure mode this prevents is a capability that claims to be reusable, is adopted on that basis, and then breaks its consumers because it was never actually productized. Maturity is declared by the owner in the registry and audited by the platform product manager, who can lower it.</span>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">07</span><h2>The platform map</h2></div>
+    <p class="sec-sub">One foundation, four capability platforms, and an application layer, with the experience platform running vertically alongside all of them. Applications are assembled by consuming across the stack rather than by building down through it.</p>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">A</span>
+        <div><h3>What stands on what</h3>
+        <p>Common Services is the cross-cutting spine every other platform stands on, which is why it cannot be owned by any of them. Data Services, LPS, AIAS, and Geo Services are the capability platforms, and each layer may consume any layer beneath it rather than only the one directly below. UXP sits beside the stack rather than on top of it: it has a touchpoint contract with every layer, because an interface can only be as responsive, as honest, and as trustworthy as the services underneath allow it to be. Identity and classification are consumed from outside the office and appear here only as the contract by which we consume them.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 490" role="img" aria-label="A layered platform stack with three superapps on top, four capability platforms beneath them, and Common Services as the foundation, alongside a full-height experience platform band that connects to every layer.">
+          <defs><marker id="ar-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <text class="d-zonelabel" x="40" y="26">APPLICATION LAYER</text>
+          <g class="n-serve"><rect class="d-box" x="40" y="40" width="180" height="62" rx="10"/><text class="d-title" x="130" y="67" text-anchor="middle">Superapp 1</text><text class="d-sub" x="130" y="87" text-anchor="middle">app portfolio 1</text></g>
+          <g class="n-serve"><rect class="d-box" x="240" y="40" width="180" height="62" rx="10"/><text class="d-title" x="330" y="67" text-anchor="middle">Superapp 2</text><text class="d-sub" x="330" y="87" text-anchor="middle">app portfolio 2</text></g>
+          <g class="n-serve"><rect class="d-box" x="440" y="40" width="180" height="62" rx="10"/><text class="d-title" x="530" y="67" text-anchor="middle">Superapp 3</text><text class="d-sub" x="530" y="87" text-anchor="middle">app portfolio 3</text></g>
+          <line class="d-arrow" x1="130" y1="102" x2="130" y2="138" marker-end="url(#ar-a)"/>
+          <line class="d-arrow" x1="330" y1="102" x2="330" y2="138" marker-end="url(#ar-a)"/>
+          <line class="d-arrow" x1="530" y1="102" x2="530" y2="138" marker-end="url(#ar-a)"/>
+          <rect class="d-zone" x="40" y="142" width="580" height="176" rx="14"/>
+          <text class="d-zonelabel" x="62" y="166">CAPABILITY PLATFORMS</text>
+          <g class="n-in"><rect class="d-box" x="64" y="178" width="256" height="56" rx="9"/><text class="d-title" x="192" y="202" text-anchor="middle">Data Services</text><text class="d-sub" x="192" y="221" text-anchor="middle">storage · search · ingest</text></g>
+          <g class="n-warm"><rect class="d-box" x="340" y="178" width="256" height="56" rx="9"/><text class="d-title" x="468" y="202" text-anchor="middle">LPS</text><text class="d-sub" x="468" y="221" text-anchor="middle">language and media</text></g>
+          <g class="n-hot"><rect class="d-box" x="64" y="246" width="256" height="56" rx="9"/><text class="d-title" x="192" y="270" text-anchor="middle">AIAS</text><text class="d-sub" x="192" y="289" text-anchor="middle">agents and assurance</text></g>
+          <g class="n-cool"><rect class="d-box" x="340" y="246" width="256" height="56" rx="9"/><text class="d-title" x="468" y="270" text-anchor="middle">Geo Services</text><text class="d-sub" x="468" y="289" text-anchor="middle">canonical world model</text></g>
+          <line class="d-arrow" x1="330" y1="318" x2="330" y2="348" marker-end="url(#ar-a)"/>
+          <g class="n-serve"><rect class="d-box" x="40" y="352" width="580" height="76" rx="10"/><text class="d-title" x="330" y="382" text-anchor="middle">Common Services</text><text class="d-sub" x="330" y="404" text-anchor="middle">kubernetes and below · cross-region · cost attribution</text></g>
+          <line class="d-soft" x1="688" y1="71" x2="624" y2="71"/>
+          <line class="d-soft" x1="688" y1="230" x2="624" y2="230"/>
+          <line class="d-soft" x1="688" y1="390" x2="624" y2="390"/>
+          <g class="n-xde"><rect class="d-box" x="690" y="40" width="170" height="388" rx="10"/><text class="d-title" x="775" y="212" text-anchor="middle">UXP</text><text class="d-sub" x="775" y="234" text-anchor="middle">experience platform</text><text class="d-sub" x="775" y="254" text-anchor="middle">touches every layer</text></g>
+          <text class="d-sub" x="450" y="466" text-anchor="middle">solid lines are dependency · dashed lines are touchpoint contracts</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">B</span>
+        <div><h3>Who owns what</h3>
+        <p>The inverse Conway maneuver, made explicit. Platform boundaries are drawn to match portfolio boundaries so that the architecture the org produces is the architecture the org intended. Central engineering carries five platforms, which is the reason its span is the widest in the office. Where this map and the org chart disagree, that disagreement is the finding.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 548" role="img" aria-label="Mapping of organizational portfolios to platforms: each of three application portfolios owns one superapp, experience design engineering owns UXP, and central engineering owns Common Services, Data Services, LPS, AIAS, and Geo Services.">
+          <defs><marker id="ar-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <text class="d-zonelabel" x="40" y="20">PORTFOLIO</text>
+          <text class="d-zonelabel" x="560" y="20">OWNS</text>
+          <g class="n-serve"><rect class="d-box" x="40" y="30" width="250" height="52" rx="9"/><text class="d-title" x="165" y="61" text-anchor="middle">App portfolio 1</text></g>
+          <g class="n-serve"><rect class="d-box" x="40" y="94" width="250" height="52" rx="9"/><text class="d-title" x="165" y="125" text-anchor="middle">App portfolio 2</text></g>
+          <g class="n-serve"><rect class="d-box" x="40" y="158" width="250" height="52" rx="9"/><text class="d-title" x="165" y="189" text-anchor="middle">App portfolio 3</text></g>
+          <g class="n-xde"><rect class="d-box" x="40" y="222" width="250" height="52" rx="9"/><text class="d-title" x="165" y="253" text-anchor="middle">Experience design eng</text></g>
+          <g class="n-hot"><rect class="d-box" x="40" y="286" width="250" height="232" rx="9"/><text class="d-title" x="165" y="396" text-anchor="middle">Central engineering</text><text class="d-sub" x="165" y="416" text-anchor="middle">five platforms</text></g>
+          <line class="d-arrow" x1="292" y1="56" x2="556" y2="56" marker-end="url(#ar-b)"/>
+          <line class="d-arrow" x1="292" y1="120" x2="556" y2="120" marker-end="url(#ar-b)"/>
+          <line class="d-arrow" x1="292" y1="184" x2="556" y2="184" marker-end="url(#ar-b)"/>
+          <line class="d-arrow" x1="292" y1="248" x2="556" y2="248" marker-end="url(#ar-b)"/>
+          <line class="d-arrow" x1="292" y1="394" x2="556" y2="306" marker-end="url(#ar-b)"/>
+          <line class="d-arrow" x1="292" y1="398" x2="556" y2="354" marker-end="url(#ar-b)"/>
+          <line class="d-arrow" x1="292" y1="402" x2="556" y2="402" marker-end="url(#ar-b)"/>
+          <line class="d-arrow" x1="292" y1="406" x2="556" y2="450" marker-end="url(#ar-b)"/>
+          <line class="d-arrow" x1="292" y1="410" x2="556" y2="498" marker-end="url(#ar-b)"/>
+          <g class="n-serve"><rect class="d-box" x="560" y="30" width="300" height="52" rx="9"/><text class="d-title" x="710" y="61" text-anchor="middle">Superapp 1</text></g>
+          <g class="n-serve"><rect class="d-box" x="560" y="94" width="300" height="52" rx="9"/><text class="d-title" x="710" y="125" text-anchor="middle">Superapp 2</text></g>
+          <g class="n-serve"><rect class="d-box" x="560" y="158" width="300" height="52" rx="9"/><text class="d-title" x="710" y="189" text-anchor="middle">Superapp 3</text></g>
+          <g class="n-xde"><rect class="d-box" x="560" y="222" width="300" height="52" rx="9"/><text class="d-title" x="710" y="253" text-anchor="middle">UXP experience platform</text></g>
+          <g class="n-in"><rect class="d-box" x="560" y="286" width="300" height="40" rx="8"/><text class="d-title" x="710" y="311" text-anchor="middle">Common Services</text></g>
+          <g class="n-serve"><rect class="d-box" x="560" y="334" width="300" height="40" rx="8"/><text class="d-title" x="710" y="359" text-anchor="middle">Data Services</text></g>
+          <g class="n-warm"><rect class="d-box" x="560" y="382" width="300" height="40" rx="8"/><text class="d-title" x="710" y="407" text-anchor="middle">LPS</text></g>
+          <g class="n-hot"><rect class="d-box" x="560" y="430" width="300" height="40" rx="8"/><text class="d-title" x="710" y="455" text-anchor="middle">AIAS</text></g>
+          <g class="n-cool"><rect class="d-box" x="560" y="478" width="300" height="40" rx="8"/><text class="d-title" x="710" y="503" text-anchor="middle">Geo Services</text></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">08</span><h2>The six platforms</h2></div>
+    <p class="sec-sub">Each platform with its service catalog, reuse tier, and honest maturity. This is simultaneously the acquisition structure, what each vehicle delivers, and the application builder's menu, what can be consumed and how ready it is.</p>
+
+    <div class="plat" style="--pc:var(--cool);">
+      <div class="plat-head">
+        <div><span class="plat-key">Platform 01</span><h3>Common Services</h3></div>
+        <span class="plat-owner">Central engineering</span>
+      </div>
+      <p class="plat-desc">The managed hosting environment. Common Services owns <b>the Kubernetes cluster and everything beneath it</b>: nodes, compute, storage, network, load balancing, certificates, regional placement, and failover. Every other platform and every superapp runs here. Where the physical layer is provided by an external hosting provider, Common Services owns that contract too, so no capability platform negotiates its own.</p>
+      <p class="plat-desc">The boundary is worth stating precisely, because it is the one most often argued about at three in the morning. <b>Common Services owns the environment; the workload owner owns what runs in it.</b> The platform guarantees that a namespace exists, that it is isolated, that it scales, that it fails over, and that its consumption is measured. It does not guarantee that the application inside it is correct. This is the paved road referred to in the organization design, and it is consumed as self-service or it is not a platform.</p>
+      <div class="cat">
+        <div class="cat-row"><span>Service</span><span>Tier</span><span>Maturity</span><span>Note</span></div>
+        <div class="cat-row"><span class="cat-svc">Cluster and workload runtime</span><span class="pill p-tier">Service</span><span class="pill p-prod">Productized</span><span class="cat-note">The managed Kubernetes environment teams deploy into: node pools, scheduling, autoscaling, and runtime isolation between tenants</span></div>
+        <div class="cat-row"><span class="cat-svc">Compute, storage, and network fabric</span><span class="pill p-tier">Service</span><span class="pill p-prod">Productized</span><span class="cat-note">Everything beneath the cluster: nodes, block and object storage, networking, load balancing, DNS, and certificate lifecycle</span></div>
+        <div class="cat-row"><span class="cat-svc">Environment provisioning and tenancy</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">A new workload gets a namespace, quotas, network policy, and a secrets path through self-service. If this needs a ticket to a person, the entire productization standard fails at its own foundation</span></div>
+        <div class="cat-row"><span class="cat-svc">Cross-region placement and failover</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Multi-region deployment, replication, and regional failover, with a published recovery objective an application can actually design against rather than assume</span></div>
+        <div class="cat-row"><span class="cat-svc">Backup, restore, and tested recovery</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">For platform-managed state. Tested on a schedule, because an untested restore is a belief rather than a capability</span></div>
+        <div class="cat-row"><span class="cat-svc">Platform observability pipeline</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Logs, metrics, and traces collected at the infrastructure layer and delivered to consumers, including the AIAS evaluation service. Collection here, interpretation there</span></div>
+        <div class="cat-row"><span class="cat-svc">Workload identity federation</span><span class="pill p-tier">Lib + svc</span><span class="pill p-beta">Beta</span><span class="cat-note">Service accounts, mutual TLS, and federation to the external identity provider. Identity authority is external; workload identity inside the cluster is not, and it is an infrastructure concern</span></div>
+        <div class="cat-row"><span class="cat-svc">Disconnected and edge deployment</span><span class="pill p-tier">Pattern + svc</span><span class="pill p-beta">Beta</span><span class="cat-note">How the same workload lands in an air-gapped enclave or at the edge without a parallel build. The waiver path in the productization standard exists largely because of this environment</span></div>
+        <div class="cat-row"><span class="cat-svc">Cost attribution and chargeback</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">Per-namespace, per-consumer, per-service accounting. At scale this is a political survival requirement, not a convenience, and it is only credible when measured at the layer that provisions the resources</span></div>
+      </div>
+    </div>
+
+    <div class="plat" style="--pc:var(--accent);">
+      <div class="plat-head">
+        <div><span class="plat-key">Platform 02</span><h3>Data Services</h3></div>
+        <span class="plat-owner">Central engineering</span>
+      </div>
+      <p class="plat-desc">The data substrate: where content lands, where it lives, how it is found, and how it leaves. Ingest and export are the two trust boundaries of the entire architecture, and they are a matched pair sharing mechanism rather than two unrelated projects. <b>The single most consequential verification in this document sits here</b>: whether storage and search are genuinely platform-wide or are LPS-local services that resemble a platform. If they are local, cross-platform discovery is a gap operating under a covered name, and every other platform will eventually build around it.</p>
+      <div class="cat">
+        <div class="cat-row"><span>Service</span><span>Tier</span><span>Maturity</span><span>Note</span></div>
+        <div class="cat-row"><span class="cat-svc">Classification and marking client</span><span class="pill p-tier">Lib + pattern</span><span class="pill p-beta">Beta</span><span class="cat-note">Marking authority is external. Propagating marks across artifacts our platforms produce is not, and currently has no named owner. It sits here because marks travel with data. See open decision 04</span></div>
+        <div class="cat-row"><span class="cat-svc">Storage and content store</span><span class="pill p-tier">Service</span><span class="pill p-prod">Productized</span><span class="cat-note">Verify it is platform-wide rather than LPS-local. This is the verification, not a formality</span></div>
+        <div class="cat-row"><span class="cat-svc">Search and retrieval</span><span class="pill p-tier">Service</span><span class="pill p-prod">Productized</span><span class="cat-note">Same verification: does it index across platforms or only within one</span></div>
+        <div class="cat-row"><span class="cat-svc">Retention, lifecycle, legal hold</span><span class="pill p-tier">Service</span><span class="pill p-prod">Productized</span><span class="cat-note">Verify coverage extends to every artifact class, not only those with an existing purge requirement</span></div>
+        <div class="cat-row"><span class="cat-svc">Ingestion and connectors</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">The inbound trust boundary. Connectors, format sniffing, dedup, active-content scanning, chain of custody. Anchors the start of the accountability chain that AIAS closes</span></div>
+        <div class="cat-row"><span class="cat-svc">Export and dissemination boundary</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">The outbound trust boundary and the assembly point for redaction, format, and dissemination control. Shares mechanism with ingest; build them as a pair or neither works</span></div>
+        <div class="cat-row"><span class="cat-svc">Data catalog and lineage</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">What data exists, where it came from, and what it fed. The data-side counterpart to the AIAS capability registry, and currently unowned</span></div>
+        <div class="cat-row"><span class="cat-svc">Shared document model</span><span class="pill p-tier">Library</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">The canonical schema LPS reassembly, OCR structure mode, and publication all depend on. Deliberately minimal, with a namespaced extension envelope apps carry and the platform does not interpret</span></div>
+        <div class="cat-row"><span class="cat-svc">Shared entity model</span><span class="pill p-tier">Library</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">The canonical entity representation the LPS resolution service and every consumer share. Same minimalism discipline, and the same risk of silently forking</span></div>
+      </div>
+    </div>
+
+    <div class="plat" style="--pc:var(--warm);">
+      <div class="plat-head">
+        <div><span class="plat-key">Platform 03</span><h3>LPS · language processing services</h3></div>
+        <span class="plat-owner">Central engineering</span>
+      </div>
+      <p class="plat-desc">Language and media processing behind one uniform job surface. This is a <b>complicated-subsystem platform</b> in the Team Topologies sense: the specialist depth is real, and pushing it into application teams would overload every one of them. Its consumers reach it through the platform API rather than through the individual models, which is what lets models be replaced without breaking applications.</p>
+      <div class="cat">
+        <div class="cat-row"><span>Service</span><span>Tier</span><span>Maturity</span><span>Note</span></div>
+        <div class="cat-row"><span class="cat-svc">Platform API and job orchestration</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">The uniform sync, async, and streaming surface every other LPS service sits behind</span></div>
+        <div class="cat-row"><span class="cat-svc">Format filters, segmentation, reassembly</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Owns the shared document model in practice. Coordinate with Data Services or it forks</span></div>
+        <div class="cat-row"><span class="cat-svc">Machine translation and bespoke models</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note"></span></div>
+        <div class="cat-row"><span class="cat-svc">Speech transcription and audio</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note"></span></div>
+        <div class="cat-row"><span class="cat-svc">OCR and document understanding</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Format-preserving. Produces the structured document artifact everything downstream consumes</span></div>
+        <div class="cat-row"><span class="cat-svc">Transliteration and script conversion</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note"></span></div>
+        <div class="cat-row"><span class="cat-svc">Computer vision</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Detection only. Recognition is the biometric boundary and is gated separately</span></div>
+        <div class="cat-row"><span class="cat-svc">Translation memory and linguistic assets</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Owns the termbase that the tagging service applies</span></div>
+        <div class="cat-row"><span class="cat-svc">Confidence, quality estimation, calibration</span><span class="pill p-tier">Lib + svc</span><span class="pill p-beta">Beta</span><span class="cat-note">The calibration discipline is reusable across platforms, not only within LPS</span></div>
+        <div class="cat-row"><span class="cat-svc">Continuous learning from post-editing</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Correction consumer. Wire to the AIAS correction spine when it exists</span></div>
+        <div class="cat-row"><span class="cat-svc">Voice biometrics</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Authority-gated</span></div>
+        <div class="cat-row"><span class="cat-svc">Face, gait, person recognition</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Authority-gated</span></div>
+        <div class="cat-row"><span class="cat-svc">Entity extraction, resolution, repository</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">The real capability behind knowledge management. Match confidence, reversible merge, cross-modal authority inheritance. Depends on assets LPS already holds</span></div>
+        <div class="cat-row"><span class="cat-svc">Controlled-vocabulary tagging</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">Applies the existing termbase to content: classify, suggest, enforce. Small, well bounded, belongs beside the termbase</span></div>
+        <div class="cat-row"><span class="cat-svc">Render and publication assembly</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">Structured document to PDF, DOCX, HTML. Render and redaction here; marking and provenance to AIAS</span></div>
+      </div>
+    </div>
+
+    <div class="plat" style="--pc:var(--hot);">
+      <div class="plat-head">
+        <div><span class="plat-key">Platform 04</span><h3>AIAS · agent interoperability and assurance</h3></div>
+        <span class="plat-owner">Central engineering</span>
+      </div>
+      <p class="plat-desc">Governance and interoperability for everything agentic. AIAS is the <b>single mediation point</b> through which agents reach tools and data, which makes its own availability and latency load-bearing for all agentic work across all three superapps. It is also where principle 05 stops being a statement and becomes an enforcement surface: if trustworthy autonomy is not mechanized here, it is not real anywhere.</p>
+      <p class="plat-desc">AIAS also holds the <b>human-in-the-loop spine</b>: task routing and correction capture. That placement is deliberate rather than convenient. A human checkpoint is a governance control, not an application feature, and a correction is simultaneously a training signal and an entry in the accountability record. Putting the mechanism anywhere else would separate the checkpoint from the evidence that the checkpoint occurred.</p>
+      <div class="cat">
+        <div class="cat-row"><span>Service</span><span>Tier</span><span>Maturity</span><span>Note</span></div>
+        <div class="cat-row"><span class="cat-svc">Capability registry</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">The natural home for the service registry this entire strategy depends on. Every productization claim in this document resolves here</span></div>
+        <div class="cat-row"><span class="cat-svc">MCP gateway and policy enforcement</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">The single mediation point. Its own SLO is load-bearing for every agentic path in every superapp</span></div>
+        <div class="cat-row"><span class="cat-svc">Agent orchestration</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note"></span></div>
+        <div class="cat-row"><span class="cat-svc">Observability and evaluation</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Consumes traces from every platform including LPS. Verify LPS is wired as a consumer rather than building its own</span></div>
+        <div class="cat-row"><span class="cat-svc">Governance and accountability record</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Marking, provenance, and the accountability chain surface here. Export-side marking belongs to this platform</span></div>
+        <div class="cat-row"><span class="cat-svc">Human task routing</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">Assign, queue, prioritize, track, and load-balance human work. Serves every human-in-the-loop checkpoint on every platform, and every checkpoint it routes is an entry in the accountability record</span></div>
+        <div class="cat-row"><span class="cat-svc">Correction capture spine</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">One schema, one sink for every human correction across every service, tagged with the original output, the change, and the pre-correction confidence. LPS post-edit capture is the pattern to generalize</span></div>
+        <div class="cat-row"><span class="cat-svc">AI assurance and test and evaluation</span><span class="pill p-tier">Svc + pattern</span><span class="pill p-beta">Beta</span><span class="cat-note">The evaluation harness is a service. Red team and robustness practice is partly a reference pattern</span></div>
+      </div>
+    </div>
+
+    <div class="plat" style="--pc:var(--cool);">
+      <div class="plat-head">
+        <div><span class="plat-key">Platform 05</span><h3>Geo Services · canonical world model</h3></div>
+        <span class="plat-owner">Central engineering</span>
+      </div>
+      <p class="plat-desc">A source-independent world model that treats every source as an observation, fuses them onto canonical entities with persistent identity and provenance, and serves every geospatial read through projections built from one event log. The load-bearing architectural commitment is the <b>one-directional boundary between the canonical world and mission assertions</b>: mission knowledge references canonical features by identity and never writes back, so judgment never contaminates ground truth. This catalog is a proposal for the owning team to correct, not a statement of current maturity.</p>
+      <div class="cat">
+        <div class="cat-row"><span>Service</span><span>Tier</span><span>Maturity</span><span>Note</span></div>
+        <div class="cat-row"><span class="cat-svc">Canonical feature store</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Versioned, write-only, fused entities with provenance and confidence. The single source of truth every projection is built from</span></div>
+        <div class="cat-row"><span class="cat-svc">Observation ingest and conflation</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Match or mint identity per observation. Consumes the Data Services ingest boundary rather than duplicating it</span></div>
+        <div class="cat-row"><span class="cat-svc">Event log and projection framework</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">One durable log carrying ids, geometry, version, and sequence. Every read view rebuilds from it and checkpoints its position</span></div>
+        <div class="cat-row"><span class="cat-svc">Tile service and freshness</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Version-driven rather than clock-driven. Hot tiles warmed proactively, the rest rendered on demand when their data version advances</span></div>
+        <div class="cat-row"><span class="cat-svc">Place and address search</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">A projection of the canonical store rather than a parallel geocoding database, which is what removes an entire duplicated stack</span></div>
+        <div class="cat-row"><span class="cat-svc">Analytic grid and layers</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">A common hexagonal frame so mission datasets and canonical data snap to one reference for analysis</span></div>
+        <div class="cat-row"><span class="cat-svc">Routing</span><span class="pill p-tier">Service</span><span class="pill p-beta">Beta</span><span class="cat-note">Projection consumer. Rebuilt from the log like every other read view</span></div>
+        <div class="cat-row"><span class="cat-svc">Mission assertion layer</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">Classified, compartmented, time-bound assertions keyed to canonical identity. The one-directional boundary is enforced here or it is not enforced</span></div>
+        <div class="cat-row"><span class="cat-svc">Canonical feature model</span><span class="pill p-tier">Library</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">The geospatial sibling of the shared entity model. Same minimalism discipline, and the same risk of silently forking per consumer</span></div>
+      </div>
+    </div>
+
+    <div class="plat" style="--pc:var(--violet);">
+      <div class="plat-head">
+        <div><span class="plat-key">Platform 06</span><h3>UXP · experience platform</h3></div>
+        <span class="plat-owner">Experience design engineering</span>
+      </div>
+      <p class="plat-desc">UXP is a vertical, not a top layer. It owns the shell, the component library, and the design system, and <b>it also holds a touchpoint contract with every platform in the stack</b>, because an interface can only be as responsive, as honest, and as trustworthy as the services underneath permit. A component library cannot make a screen feel fast if the API it calls returns nothing until everything is ready. It cannot display confidence honestly if the value it receives was never calibrated. It cannot show provenance if provenance is not retrievable per artifact.</p>
+      <p class="plat-desc">This is also the practical answer to why experience design engineering is a portfolio rather than a service. Its people have to be in the room when a platform contract is being designed, not handed the contract afterward and asked to make it feel good. <b>Backend productization is necessary, but it is frontend plumbing that consumes the most application build time</b>, and a governed component library with a working app shell is what converts a three-month application into a three-week one. This catalog is a proposal for the owning team to correct.</p>
+      <div class="cat">
+        <div class="cat-row" style="grid-template-columns:170px 1.25fr 1.25fr;"><span>Layer</span><span>What UXP requires from it</span><span>Why the interface depends on it</span></div>
+        <div class="cat-row" style="grid-template-columns:170px 1.25fr 1.25fr;"><span class="cat-svc">Superapps</span><span class="cat-note">One shell taken unforked, a module registration contract, and a single navigation model</span><span class="cat-note">Three portfolios that feel like one office rather than three vendors who happened to share a login page</span></div>
+        <div class="cat-row" style="grid-template-columns:170px 1.25fr 1.25fr;"><span class="cat-svc">Data Services</span><span class="cat-note">Cursor pagination, partial and streaming results, and error shapes carrying a message a user can be shown</span><span class="cat-note">A screen cannot feel responsive if the contract forces it to wait for a complete result, and a stack trace is not an error message</span></div>
+        <div class="cat-row" style="grid-template-columns:170px 1.25fr 1.25fr;"><span class="cat-svc">LPS</span><span class="cat-note">Calibrated confidence with documented semantics, progress and partial output on long jobs, and correction capture at the point of edit</span><span class="cat-note">Confidence displayed without calibration is worse than no confidence, because it teaches an analyst to trust a number that does not mean what it appears to mean</span></div>
+        <div class="cat-row" style="grid-template-columns:170px 1.25fr 1.25fr;"><span class="cat-svc">AIAS</span><span class="cat-note">Provenance retrievable per artifact, an explanation surface for agent actions, and task queue semantics a reviewer can act on: claim, reassign, prioritize, defer</span><span class="cat-note">Trustworthy autonomy is only real if an analyst can see it, and task routing is experienced entirely as an interface. Principle 05 is enforced at this seam or it is decorative</span></div>
+        <div class="cat-row" style="grid-template-columns:170px 1.25fr 1.25fr;"><span class="cat-svc">Geo Services</span><span class="cat-note">Feature identity stable enough to select and hover, a freshness signal per tile, and confidence per feature</span><span class="cat-note">A map that cannot tell a user how current it is teaches them to distrust all of it, including the parts that are current</span></div>
+        <div class="cat-row" style="grid-template-columns:170px 1.25fr 1.25fr;"><span class="cat-svc">Common Services</span><span class="cat-note">A platform and region health signal an application can subscribe to, and cost visibility retrievable where the work is being done</span><span class="cat-note">A shell that cannot tell a user the system is degraded lets them keep working against a failing dependency, and a team that cannot see what its usage costs cannot make the trade-off</span></div>
+      </div>
+
+      <div class="cat" style="margin-top:16px;">
+        <div class="cat-row"><span>Capability</span><span>Tier</span><span>Maturity</span><span>Note</span></div>
+        <div class="cat-row"><span class="cat-svc">Shared UI component library</span><span class="pill p-tier">Library</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">Possibly the highest-leverage single item in this document. Classification banners, confidence display, provenance surfaces, human-review queues, standard shells</span></div>
+        <div class="cat-row"><span class="cat-svc">App shell</span><span class="pill p-tier">Pattern + lib</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">A new application starts from a working governed skeleton with auth, classification, navigation, and telemetry already wired, not from an empty repository</span></div>
+        <div class="cat-row"><span class="cat-svc">Design system and tokens</span><span class="pill p-tier">Library</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">Versioned tokens and primitives. The contract that makes three superapps feel like one office rather than three vendors</span></div>
+        <div class="cat-row"><span class="cat-svc">Accessibility tooling and audit</span><span class="pill p-tier">Lib + svc</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">Enforced in CI against the component library rather than assessed per application at the end</span></div>
+        <div class="cat-row"><span class="cat-svc">Human-in-the-loop review components</span><span class="pill p-tier">Library</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">The UI half of the AIAS task routing service and accountability record. Where trustworthy autonomy becomes something an analyst can actually see</span></div>
+        <div class="cat-row"><span class="cat-svc">Research repository and insight capture</span><span class="pill p-tier">Service</span><span class="pill p-gap">Unbuilt</span><span class="cat-note">Findings from all three superapps in one place, so research on one portfolio informs the others instead of being repeated</span></div>
+        <div class="cat-row"><span class="cat-svc">Comments and coordination threads</span><span class="pill p-tier">Pattern</span><span class="pill p-beta">Per app</span><span class="cat-note">Data model is common, workflow is per program. Copy the pattern rather than centralizing the runtime</span></div>
+        <div class="cat-row"><span class="cat-svc">Product templates</span><span class="pill p-tier">Pattern</span><span class="pill p-beta">Per app</span><span class="cat-note">Per mission product line. Centralizing these makes the platform a bottleneck for work that genuinely differs</span></div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <h3>What this map says to do</h3>
+      <p><strong>Productize and verify what exists.</strong> Storage, search, and retention function today. The open question is whether they are one coherent Data Services platform or three separately owned services that happen to work, and whether their reach is platform-wide or LPS-local. Incorporating them under one contract surface and one registry presence is the first body of work, and it is mostly integration and contract discipline rather than new capability.</p>
+      <p><strong>Build the unbuilt substrate.</strong> Ingest and export in Data Services, the shared document and entity models, human task routing and the correction spine in AIAS, and cost attribution in Common Services. Task routing and the shared models are load-bearing: task routing because every human checkpoint on every platform depends on it, the models because every platform silently forks them otherwise. Cost attribution is load-bearing for a different reason: without it, no platform can defend its funding line with evidence.</p>
+      <p><strong>Start UXP now, not after the backends settle.</strong> It has the longest lead time to visible application speed and the fewest dependencies on anything else in this document. Waiting for backend productization before starting the component library means the first superapp pays full frontend cost anyway.</p>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">09</span><h2>Superapps</h2></div>
+    <p class="sec-sub">One superapp per application portfolio. Three total. This is the goal state, and it is a constraint on what each portfolio is allowed to ship rather than an aspiration for what it might eventually converge on.</p>
+
+    <div class="lead-copy" style="margin-top:24px;">
+      <p>The failure mode this prevents is familiar: a portfolio ships eleven applications that each solve one workflow, each with its own login flow, its own navigation, its own interpretation of a classification banner, and its own answer to where a user goes next. Users then do their actual work by keeping nine tabs open and copying between them. <strong>The integration burden does not disappear when you decline to own it; it moves to the analyst.</strong></p>
+      <p>A superapp moves that burden back into engineering, where it can be solved once. One shell, one identity story, one navigation model, one classification and provenance treatment, and one place a user learns how the system behaves. Inside it, capabilities are added and retired independently, which is what keeps the constraint from becoming a monolith.</p>
+    </div>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">C</span>
+        <div><h3>Superapp anatomy</h3>
+        <p>The shell comes from UXP and is not rebuilt per portfolio, and UXP components appear inside the modules too, not only in the frame around them. Capability modules are owned by stream-aligned teams inside the portfolio, deploy independently, and are added or retired without touching the shell. Everything below the module boundary is consumed from the platforms rather than built locally, which is the line that keeps a superapp from becoming a distributed monolith.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 348" role="img" aria-label="Superapp anatomy: an app shell from UXP at the top, four independently deployed capability modules beneath it, and platform services consumed underneath.">
+          <defs><marker id="ar-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <rect class="d-zone" x="40" y="24" width="820" height="188" rx="14"/>
+          <text class="d-zonelabel" x="62" y="48">ONE SUPERAPP · ONE APP PORTFOLIO</text>
+          <g class="n-xde"><rect class="d-box" x="64" y="60" width="772" height="52" rx="9"/><text class="d-title" x="450" y="82" text-anchor="middle">App shell from UXP</text><text class="d-sub" x="450" y="101" text-anchor="middle">auth · classification · navigation · provenance · telemetry</text></g>
+          <g class="n-serve"><rect class="d-box" x="64" y="130" width="184" height="60" rx="9"/><text class="d-title" x="156" y="155" text-anchor="middle">Capability</text><text class="d-sub" x="156" y="175" text-anchor="middle">one team</text></g>
+          <g class="n-serve"><rect class="d-box" x="260" y="130" width="184" height="60" rx="9"/><text class="d-title" x="352" y="155" text-anchor="middle">Capability</text><text class="d-sub" x="352" y="175" text-anchor="middle">one team</text></g>
+          <g class="n-serve"><rect class="d-box" x="456" y="130" width="184" height="60" rx="9"/><text class="d-title" x="548" y="155" text-anchor="middle">Capability</text><text class="d-sub" x="548" y="175" text-anchor="middle">one team</text></g>
+          <g class="n-serve"><rect class="d-box" x="652" y="130" width="184" height="60" rx="9"/><text class="d-title" x="744" y="155" text-anchor="middle">Capability</text><text class="d-sub" x="744" y="175" text-anchor="middle">one team</text></g>
+          <line class="d-arrow" x1="156" y1="212" x2="156" y2="244" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="352" y1="212" x2="352" y2="244" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="548" y1="212" x2="548" y2="244" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="744" y1="212" x2="744" y2="244" marker-end="url(#ar-c)"/>
+          <g class="n-in"><rect class="d-box" x="40" y="248" width="820" height="66" rx="10"/><text class="d-title" x="450" y="275" text-anchor="middle">Platform services</text><text class="d-sub" x="450" y="295" text-anchor="middle">Common Services · Data Services · LPS · AIAS · Geo Services · consumed, never rebuilt</text></g>
+          <text class="d-sub" x="450" y="338" text-anchor="middle">modules deploy independently · the shell does not</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="scope-grid">
+      <div class="scope-col done">
+        <h3>What makes it a superapp</h3>
+        <ul>
+          <li>One shell, taken from UXP and not forked, so all three feel like one office</li>
+          <li>One identity and session; a user signs in once for everything in the portfolio</li>
+          <li>One classification, marking, and provenance treatment, implemented in shared components</li>
+          <li>Capability modules that deploy independently and can be retired without a shell release</li>
+          <li>A single navigation model a user learns once and carries across every capability</li>
+          <li>Every backend capability consumed from a platform, with local build as an exception that needs a reason</li>
+        </ul>
+      </div>
+      <div class="scope-col open">
+        <h3>What would make it a monolith</h3>
+        <ul>
+          <li>Modules that cannot ship without a coordinated release across the portfolio</li>
+          <li>A shared internal database that modules reach into directly rather than through contracts</li>
+          <li>Shell changes required for every new capability, which makes UXP a delivery bottleneck</li>
+          <li>Cross-module calls that bypass the platform contracts because they are in the same repository</li>
+          <li>A portfolio-local reimplementation of something a platform already provides</li>
+          <li>One team owning the shell and gating everyone else's release</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">Migration</span>
+      <span>The three superapps are the destination for the strangler work in the org design, not a separate program. Each legacy application is strangled into a capability module inside its portfolio's superapp rather than into a standalone replacement, which is what makes consolidation a byproduct of modernization instead of a second migration nobody funded. The first cut in each portfolio should be the one that establishes the shell, because every subsequent cut is cheaper once it exists.</span>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">10</span><h2>Open decisions</h2></div>
+    <p class="sec-sub">Policy and ownership calls this architecture surfaces but cannot make. Each needs a named owner and a date before the dependent work proceeds, and each is a council item rather than a portfolio one.</p>
+
+    <div class="decisions">
+      <div class="decision"><span class="dn">01</span><div><h3>Are storage, search, and retention one Data Services platform or three separate services?</h3><p>Determines whether the first body of Data Services work is incorporation or construction, and therefore whether it is a quarter or a year.</p></div></div>
+      <div class="decision"><span class="dn">02</span><div><h3>Do storage and search reach across all platforms, or only within LPS?</h3><p>If only within LPS, cross-platform discovery remains a gap operating under a covered name, and every other platform will eventually build its own index.</p></div></div>
+      <div class="decision"><span class="dn">03</span><div><h3>Where exactly is the line between the hosting environment and the workload?</h3><p>Common Services owns the cluster and below. But base images, service mesh configuration, deployment pipelines, and admission policy all sit at the seam. Whoever owns each of those owns a real constraint on every other platform, and the argument is much cheaper now than during an incident.</p></div></div>
+      <div class="decision"><span class="dn">04</span><div><h3>Who owns marking propagation now that classification authority is external?</h3><p>We consume the marking service; we do not own it. But marks have to inherit correctly across artifacts our platforms produce, and that propagation currently has no named owner on either side of the boundary.</p></div></div>
+      <div class="decision"><span class="dn">05</span><div><h3>One shared entity repository or per-mission repositories?</h3><p>Analytic power against aggregation risk. A policy call with an oversight dimension, not an engineering preference, and not one the council can settle alone.</p></div></div>
+      <div class="decision"><span class="dn">06</span><div><h3>One shared document model, or coordinated per-platform models?</h3><p>Determines whether LPS, publication, and the superapps share a representation or fork it. Forking is the default outcome of not deciding.</p></div></div>
+      <div class="decision"><span class="dn">07</span><div><h3>Does the geospatial canonical model share the entity model, or stay parallel?</h3><p>A geospatial feature and an entity overlap substantially. Two canonical models that partially agree is the worst of the available outcomes.</p></div></div>
+      <div class="decision"><span class="dn">08</span><div><h3>What are the numeric targets behind the productization standard?</h3><p>Onboarding time, first-call time, deprecation notice period, and number of concurrently supported major versions. Placeholders throughout today. Set once, centrally, and enforce uniformly.</p></div></div>
+      <div class="decision"><span class="dn">09</span><div><h3>Who enforces the experience contract during platform acceptance?</h3><p>UXP requirements sit inside other platforms' contracts: streaming results, calibrated confidence, retrievable provenance, freshness signals. If nobody checks them at acceptance, they surface a year later as interfaces that cannot be built.</p></div></div>
+      <div class="decision"><span class="dn">10</span><div><h3>What is the exception path when a superapp needs something no platform provides?</h3><p>Build locally and propose promotion later, or block on the platform. Without a written answer, the informal answer becomes build locally and never propose.</p></div></div>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">Status</span>
+      <span>The productization standard, the platform assignments, and the acceptance language are proposals for review, not settled policy. Maturity levels in the catalogs reflect current external understanding and are the owning teams' to correct in the registry. The Geo Services and UXP catalogs in particular are constructed here rather than carried from an existing strategy document, and should be treated as a starting point for their owners rather than as a description of what exists.</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Architecture reference · 6 platforms · 3 superapps · companion to the organization design · planning reference, not a commitment</p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){ els.forEach(function(e){e.classList.add('in');}); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, {threshold:0.12});
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Five portfolios, two layers · Organization design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F151B; --bg-2:#0B1015;
+    --surface:#151D25; --surface-2:#1A2530;
+    --line:#28353F; --line-2:#33454F;
+    --text:#E7EEF4; --text-dim:#93A2AF; --text-mute:#647380;
+    --accent:#EE5D8A; --accent-dim:#8C2F51;
+    --hot:#EF7A33; --warm:#E0A93C; --cool:#6E93B4;
+    --arrow:#5C6E7B; --violet:#8B7BD8;
+    --display:'Space Grotesk',sans-serif;
+    --body:'IBM Plex Sans',sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+    --maxw:1060px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--body); font-size:17px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  h1,h2,h3{font-family:var(--display); font-weight:600; line-height:1.15; margin:0;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--accent);
+  }
+  .section-num{
+    font-family:var(--mono); font-size:12px; color:var(--text-mute);
+    letter-spacing:.14em;
+  }
+
+  /* hero */
+  .hero{position:relative; overflow:hidden; border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#0C1218 0%, var(--bg) 100%);}
+  .net-bg{position:absolute; inset:0; opacity:.6; pointer-events:none;
+    mask-image:radial-gradient(125% 100% at 80% 4%, #000 0%, transparent 66%);}
+  .hero-inner{position:relative; padding:82px 0 68px;}
+  .hero h1{font-size:clamp(38px,6.5vw,68px); font-weight:700; letter-spacing:-.02em; max-width:16ch;}
+  .hero h1 .accent{color:var(--accent);}
+  .hero .lede{margin:22px 0 0; font-size:clamp(17px,2.4vw,20px); color:var(--text-dim); max-width:58ch;}
+  .chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:32px;}
+  .chip{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.04em;
+    color:var(--text-dim); border:1px solid var(--line-2);
+    padding:7px 13px; border-radius:100px; background:rgba(255,255,255,.015);
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .chip .dot{width:6px; height:6px; border-radius:50%; background:var(--accent);}
+
+  /* sections */
+  section{padding:74px 0; border-bottom:1px solid var(--line);}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:8px; flex-wrap:wrap;}
+  .sec-head h2{font-size:clamp(26px,3.6vw,34px); letter-spacing:-.01em;}
+  .sec-sub{color:var(--text-dim); max-width:64ch; margin:14px 0 0; font-size:17px;}
+
+  .lead-copy p{max-width:66ch; margin:0 0 18px; color:#CBD6DE;}
+  .lead-copy p:last-child{margin-bottom:0;}
+  .lead-copy strong{color:var(--text); font-weight:600;}
+
+  /* feature grid */
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:34px;}
+  .card{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:14px; padding:22px 22px 24px; position:relative;
+    transition:border-color .25s ease, transform .25s ease;
+  }
+  .card:hover{border-color:var(--line-2); transform:translateY(-2px);}
+  .card .ico{width:34px; height:34px; margin-bottom:16px; color:var(--accent);}
+  .card h3{font-size:18px; font-weight:600; margin-bottom:7px;}
+  .card p{margin:0; font-size:15px; line-height:1.6; color:var(--text-dim);}
+
+  /* model comparison */
+  .models{display:flex; flex-direction:column; gap:16px; margin-top:34px;}
+  .model{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px 26px 26px;}
+  .model-head{display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap;}
+  .model-head h3{font-size:19px;}
+  .model-head .src{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--text-mute); display:block; margin-bottom:6px;}
+  .verdict{font-family:var(--mono); font-size:12.5px; color:var(--accent); border:1px solid var(--accent-dim); padding:5px 12px; border-radius:100px; white-space:nowrap;}
+  .verdict.no{color:var(--hot); border-color:rgba(239,122,51,.42);}
+  .proscons{display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-top:18px;}
+  .proscons h4{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--text-mute); margin:0 0 8px; font-weight:500;}
+  .proscons ul{margin:0; padding:0; list-style:none;}
+  .proscons li{padding:8px 0 8px 24px; position:relative; font-size:15px; line-height:1.55; color:#C3D0DA;}
+  .proscons li::before{content:""; position:absolute; left:2px; top:16px; width:9px; height:9px;}
+  .proscons .pros li::before{background:var(--accent); clip-path:polygon(14% 44%,0 65%,45% 100%,100% 20%,82% 6%,43% 68%);}
+  .proscons .cons li::before{border:1.5px solid var(--hot); border-radius:50%; top:15px;}
+  .model .take{margin:18px 0 0; padding-top:16px; border-top:1px solid var(--line); font-size:15px; color:var(--text-dim); max-width:78ch;}
+  .model .take b{color:var(--text); font-weight:600;}
+
+  /* team type ladder, signature component */
+  .ladder{margin-top:38px; display:flex; flex-direction:column; gap:14px;}
+  .tier{
+    display:grid; grid-template-columns:132px 1fr; gap:24px; align-items:center;
+    background:var(--surface); border:1px solid var(--line);
+    border-left:3px solid var(--tc); border-radius:0 14px 14px 0; padding:22px 24px;
+  }
+  .tier .zoom{font-family:var(--display); font-weight:600;}
+  .tier .zoom .z{font-size:30px; color:var(--text); letter-spacing:-.01em;}
+  .tier .zoom .lbl{display:block; font-family:var(--mono); font-size:11.5px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--text-mute); margin-top:3px;}
+  .tier .cadence{font-family:var(--mono); font-size:13px; color:var(--tc);
+    letter-spacing:.05em; margin-bottom:6px;}
+  .tier .desc{font-size:15.5px; color:var(--text-dim); margin:0;}
+  .tier .desc b{color:var(--text); font-weight:600;}
+  .meter{height:6px; border-radius:100px; background:rgba(255,255,255,.06); margin-top:14px; overflow:hidden;}
+  .meter i{display:block; height:100%; background:var(--tc); border-radius:100px;}
+  .ladder-note{margin-top:20px; font-size:15px; color:var(--text-dim);
+    display:flex; gap:12px; align-items:flex-start;}
+  .ladder-note .k{color:var(--accent); font-family:var(--mono); font-size:12px;
+    letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; padding-top:3px;}
+
+  /* mission, vision, values */
+  .mvv-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:34px;}
+  .mvv{background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--mc);
+    border-radius:14px; padding:26px 28px;}
+  .mvv .mvv-eye{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--mc); margin-bottom:12px;}
+  .mvv .stmt{font-family:var(--display); font-size:19px; font-weight:600; color:var(--text); line-height:1.32; margin-bottom:12px;}
+  .mvv p{margin:0; font-size:15px; color:var(--text-dim); line-height:1.7;}
+  .values{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px;}
+  .value{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px 24px 24px;}
+  .value .vn{font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--accent); margin-bottom:10px;}
+  .value h3{font-size:17px; font-weight:600; margin-bottom:8px;}
+  .value p{margin:0; font-size:14.5px; line-height:1.6; color:var(--text-dim);}
+  .values-eye{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim); margin:38px 0 -4px;}
+
+  /* callout */
+  .callout{margin-top:34px; background:linear-gradient(135deg, rgba(238,93,138,.09), rgba(238,93,138,.02));
+    border:1px solid var(--accent-dim); border-radius:16px; padding:30px 32px;}
+  .callout.warn{background:linear-gradient(135deg, rgba(239,122,51,.09), rgba(239,122,51,.02)); border-color:rgba(239,122,51,.40);}
+  .callout h3{font-size:20px; margin-bottom:10px; color:var(--text);}
+  .callout p{margin:0 0 14px; color:#CBD6DE; max-width:72ch; font-size:16px;}
+  .callout p:last-child{margin-bottom:0;}
+
+  /* diagrams */
+  .diagram-block{margin-top:40px;}
+  .diagram-block:first-of-type{margin-top:34px;}
+  .diagram-cap{display:flex; gap:14px; align-items:baseline; margin-bottom:16px;}
+  .diagram-cap .n{font-family:var(--mono); color:var(--accent); font-size:13px; padding-top:2px;}
+  .diagram-cap h3{font-size:19px; font-weight:600;}
+  .diagram-cap p{margin:4px 0 0; color:var(--text-dim); font-size:15px; max-width:72ch;}
+  .diagram-frame{
+    background:var(--bg-2); border:1px solid var(--line);
+    border-radius:16px; padding:26px 22px;
+  }
+  svg.diagram{width:100%; height:auto; display:block;}
+  .d-zone{fill:rgba(255,255,255,.018); stroke:var(--line-2); stroke-dasharray:5 5; stroke-width:1;}
+  .d-box{fill:var(--surface-2); stroke:var(--line-2); stroke-width:1;}
+  .d-title{fill:var(--text); font-family:var(--body); font-size:15px; font-weight:500;}
+  .d-sub{fill:var(--text-dim); font-family:var(--mono); font-size:12px;}
+  .d-zonelabel{fill:var(--text-mute); font-family:var(--mono); font-size:12px; letter-spacing:.12em;}
+  .d-arrow{stroke:var(--arrow); stroke-width:1.5; fill:none;}
+  .d-soft{stroke:var(--arrow); stroke-width:1.2; fill:none; stroke-dasharray:4 5; opacity:.8;}
+  .n-in rect{fill:rgba(110,147,180,.14); stroke:var(--cool);} .n-in .d-title{fill:#B4CBE0;}
+  .n-serve rect{fill:rgba(238,93,138,.15); stroke:var(--accent);} .n-serve .d-title{fill:#F7A8C2;}
+  .n-hot rect{fill:rgba(239,122,51,.15); stroke:var(--hot);} .n-hot .d-title{fill:#F6AC74;}
+  .n-warm rect{fill:rgba(224,169,60,.14); stroke:var(--warm);} .n-warm .d-title{fill:#ECC677;}
+  .n-cool rect{fill:rgba(110,147,180,.13); stroke:var(--cool);} .n-cool .d-title{fill:#AEC6DC;}
+  .n-xde rect{fill:rgba(139,123,216,.15); stroke:var(--violet);} .n-xde .d-title{fill:#BCB1EE;}
+
+  /* role table */
+  .roles{margin-top:34px; border:1px solid var(--line); border-radius:14px; overflow:hidden;}
+  .r-row{display:grid; grid-template-columns:210px 96px 1fr; gap:18px; padding:15px 22px; border-top:1px solid var(--line); font-size:15px; align-items:baseline;}
+  .r-row:first-child{border-top:none; background:var(--surface); font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-mute);}
+  .r-row .r-name{color:var(--text); font-weight:500;}
+  .r-row .r-count{font-family:var(--mono); color:var(--accent); font-size:13.5px;}
+  .r-row .r-owns{color:var(--text-dim);}
+  .r-row.r-key{background:rgba(238,93,138,.06);}
+
+  /* risk rows */
+  .risks{margin-top:34px; display:flex; flex-direction:column; gap:14px;}
+  .risk{display:grid; grid-template-columns:1fr 1.15fr; gap:26px; background:var(--surface);
+    border:1px solid var(--line); border-left:3px solid var(--hot); border-radius:0 14px 14px 0; padding:22px 24px;}
+  .risk h3{font-size:17px; margin-bottom:8px;}
+  .risk p{margin:0; font-size:15px; color:var(--text-dim); line-height:1.6;}
+  .risk .ctl{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); display:block; margin-bottom:8px;}
+  .risk .ctl-body{color:#C3D0DA;}
+
+  /* culture levers */
+  .levers{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:34px;}
+  .lever{background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--lc);
+    border-radius:14px; overflow:hidden;}
+  .lever-head{padding:24px 26px 20px; border-bottom:1px solid var(--line);}
+  .lever-num{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--lc); margin-bottom:10px;}
+  .lever-head h3{font-size:22px; line-height:1.14; margin-bottom:11px; letter-spacing:-.01em;}
+  .lever-def{font-size:14.5px; color:var(--text-dim); line-height:1.7; margin:0;}
+  .lever-body{padding:18px 26px 24px;}
+  .lever-q{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--lc); margin-bottom:14px;}
+  .lever-ex{display:flex; gap:11px; align-items:flex-start; margin-bottom:12px;}
+  .lever-ex:last-child{margin-bottom:0;}
+  .lever-dot{width:6px; height:6px; border-radius:50%; background:var(--lc); flex-shrink:0; margin-top:8px;}
+  .lever-tx{font-size:14.5px; color:var(--text-dim); line-height:1.65;}
+  .lever-tx b{color:var(--text); font-weight:600;}
+
+  /* roadmap */
+  .roadmap{margin-top:38px;}
+  .phase{position:relative; padding:0 0 34px 30px; border-left:2px solid var(--line);}
+  .phase:last-child{border-left-color:transparent; padding-bottom:4px;}
+  .phase::before{content:""; position:absolute; left:-8px; top:3px; width:13px; height:13px; border-radius:50%; background:var(--bg); border:2px solid var(--accent);}
+  .phase.done::before{background:var(--accent);}
+  .phase-head{display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap;}
+  .phase .pnum{font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent);}
+  .phase h3{font-size:20px; margin-top:3px;}
+  .phase .cost-tag{font-family:var(--mono); font-size:12.5px; color:var(--warm); border:1px solid var(--line-2); padding:5px 12px; border-radius:100px; white-space:nowrap;}
+  .phase .pdesc{color:var(--text-dim); margin:9px 0 15px; max-width:70ch; font-size:15.5px;}
+  .caps{display:flex; flex-wrap:wrap; gap:8px;}
+  .cap{font-size:13px; color:#C3D0DA; background:var(--surface-2); border:1px solid var(--line); padding:6px 11px; border-radius:8px;}
+
+  /* scope */
+  .scope-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:32px;}
+  .scope-col{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px 26px;}
+  .scope-col h3{font-size:16px; font-family:var(--mono); font-weight:500; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--text-dim); margin-bottom:14px;}
+  .scope-col ul{margin:0; padding:0; list-style:none;}
+  .scope-col li{padding:9px 0 9px 26px; position:relative; font-size:15.5px; color:#CBD6DE; border-top:1px solid var(--line);}
+  .scope-col li:first-child{border-top:none;}
+  .scope-col li::before{content:""; position:absolute; left:2px; top:16px; width:9px; height:9px;}
+  .scope-col.done li::before{background:var(--accent); clip-path:polygon(14% 44%,0 65%,45% 100%,100% 20%,82% 6%,43% 68%);}
+  .scope-col.open li::before{border:1.5px solid var(--hot); border-radius:50%; top:15px;}
+
+  footer{padding:44px 0 60px;}
+  footer p{color:var(--text-mute); font-size:14px; font-family:var(--mono); letter-spacing:.03em; margin:0;}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:none;}
+
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px;}
+
+  @media (max-width:860px){
+    .grid,.values{grid-template-columns:1fr 1fr;}
+    .scope-grid,.mvv-grid,.levers{grid-template-columns:1fr;}
+    .proscons{grid-template-columns:1fr; gap:6px;}
+    .risk{grid-template-columns:1fr; gap:16px;}
+  }
+  @media (max-width:560px){
+    body{font-size:16px;}
+    .grid,.values{grid-template-columns:1fr;}
+    .r-row{grid-template-columns:1fr auto; gap:8px; padding:14px 16px; font-size:14px;}
+    .r-row .r-owns{grid-column:1 / -1;}
+    .tier{grid-template-columns:1fr; gap:12px; border-radius:0 0 14px 14px; border-left-width:3px;}
+    section{padding:56px 0;}
+    .hero-inner{padding:60px 0 50px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important; scroll-behavior:auto !important;}
+    .reveal{opacity:1; transform:none;}
+  }
+  @media print{
+    :root{
+      --bg:#FFFFFF; --bg-2:#F4F7F9;
+      --surface:#F5F8FA; --surface-2:#ECF1F4;
+      --line:#D4DDE3; --line-2:#C3CED6;
+      --text:#14212B; --text-dim:#43535F; --text-mute:#63727E;
+      --accent:#B03063; --accent-dim:#7A2143;
+      --hot:#C25A1E; --warm:#A97C16; --cool:#4E7597;
+      --arrow:#6B7A86; --violet:#5B4CA8;
+    }
+    *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; transition:none !important; animation:none !important; }
+    html,body{ background:#FFFFFF !important; color:var(--text) !important; }
+    .reveal{ opacity:1 !important; transform:none !important; }
+    .hero{ background:linear-gradient(180deg,#EEF3F6 0%, #FFFFFF 100%) !important; }
+    .net-bg{ display:none !important; }
+    .lead-copy p,.callout p,.scope-col li,.proscons li{ color:#28323B !important; }
+    .cap{ color:#33414C !important; }
+    .d-title,.n-in .d-title,.n-serve .d-title,.n-hot .d-title,.n-warm .d-title,.n-cool .d-title,.n-xde .d-title{ fill:#16222E !important; }
+    .d-zone{ fill:rgba(0,0,0,.02) !important; }
+    @page{ margin:12mm; }
+    section{ padding:22px 0 !important; }
+    .card,.model,.phase,.diagram-block,.callout,.tier,.risk,.scope-col,.r-row,  .ladder-note,.mvv,.value,.lever{ break-inside:avoid; page-break-inside:avoid; }
+    h1,h2,h3{ break-after:avoid; page-break-after:avoid; }
+    .diagram{ max-width:100%; height:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="net-bg" viewBox="0 0 900 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <pattern id="netpat" width="88" height="88" patternUnits="userSpaceOnUse" patternTransform="scale(1.35)">
+        <path d="M44 44 L4 4 M44 44 L84 4 M44 44 L4 84 M44 44 L84 84"
+              fill="none" stroke="#EE5D8A" stroke-width="0.7" opacity="0.15"/>
+        <path d="M44 0 V12 M44 76 V88 M0 44 H12 M76 44 H88"
+              fill="none" stroke="#EE5D8A" stroke-width="0.7" opacity="0.10"/>
+        <circle cx="44" cy="44" r="3.6" fill="none" stroke="#EE5D8A" stroke-width="1.1" opacity="0.34"/>
+        <circle cx="0" cy="0" r="2.1" fill="#EE5D8A" opacity="0.26"/>
+        <circle cx="88" cy="0" r="2.1" fill="#EE5D8A" opacity="0.26"/>
+        <circle cx="0" cy="88" r="2.1" fill="#EE5D8A" opacity="0.26"/>
+        <circle cx="88" cy="88" r="2.1" fill="#EE5D8A" opacity="0.26"/>
+      </pattern>
+    </defs>
+    <rect width="900" height="520" fill="url(#netpat)"/>
+  </svg>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">Organization design</div>
+    <h1 style="margin-top:20px;">Five portfolios, two layers, <span class="accent">nothing in between</span>.</h1>
+    <p class="lede">A flat structure for three user-facing application portfolios, an experience design engineering portfolio, and central engineering, where coordination happens through written contracts between teams rather than through layers of management.</p>
+    <div class="chips">
+      <span class="chip"><span class="dot"></span>5 portfolios</span>
+      <span class="chip"><span class="dot"></span>~30 teams</span>
+      <span class="chip"><span class="dot"></span>2 reporting layers</span>
+      <span class="chip"><span class="dot"></span>Team Topologies core</span>
+    </div>
+  </div>
+</header>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">01</span><h2>Mission, vision, and values</h2></div>
+    <p class="sec-sub">What the office is for, where it is going, and the commitments that hold when the trade-offs get hard. Everything structural in this document is downstream of these.</p>
+
+    <div class="mvv-grid">
+      <div class="mvv" style="--mc:var(--accent);">
+        <div class="mvv-eye">Mission</div>
+        <div class="stmt">Deliver secure, human-centered software capabilities that enable mission outcomes, at the speed the mission demands.</div>
+        <p>This office exists to build, modernize, and sustain the software systems the organization depends on. We do this with engineering rigor, deliberate human-machine teaming, and a relentless focus on the people who use what we build.</p>
+      </div>
+      <div class="mvv" style="--mc:var(--violet);">
+        <div class="mvv-eye">Vision</div>
+        <div class="stmt">A modern, AI-augmented software organization where experts lead experts, and every engineer's work is traceable to mission impact.</div>
+        <p>We are building toward an office where legacy debt is retired, delivery is continuous, AI is trustworthy and governed, and every team has the platform, capability, and culture to do the best work of their careers.</p>
+      </div>
+    </div>
+
+    <div class="values-eye">Core values</div>
+    <div class="values">
+      <div class="value">
+        <div class="vn">01</div>
+        <h3>Mission first</h3>
+        <p>Technical decisions are evaluated by their contribution to mission outcomes. Elegance without impact is not enough.</p>
+      </div>
+      <div class="value">
+        <div class="vn">02</div>
+        <h3>Experts lead experts</h3>
+        <p>We hire and promote domain mastery. Every leader must be able to engage with, evaluate, and improve the work beneath them.</p>
+      </div>
+      <div class="value">
+        <div class="vn">03</div>
+        <h3>Build to last</h3>
+        <p>We engineer for security, resilience, and long-term maintainability, not for speed alone. Technical debt is a mission risk.</p>
+      </div>
+      <div class="value">
+        <div class="vn">04</div>
+        <h3>Human-centered</h3>
+        <p>The user is always in the room, even when they are not. We build with them, not just for them, and measure success by how well our systems serve them.</p>
+      </div>
+      <div class="value">
+        <div class="vn">05</div>
+        <h3>Trustworthy autonomy</h3>
+        <p>AI augments human judgment. It does not replace it. Every system we deploy is explainable, traceable, and under meaningful human control.</p>
+      </div>
+      <div class="value">
+        <div class="vn">06</div>
+        <h3>Blameless learning</h3>
+        <p>Failures are systems problems, not people problems. We acknowledge mistakes openly, learn from telemetry, and build more resilient systems as a result.</p>
+      </div>
+    </div>
+
+    <div class="ladder-note" style="margin-top:28px;">
+      <span class="k">Structure</span>
+      <span>Four of these show up as structural commitments rather than sentiment. Experts lead experts is why chief engineers hold architecture authority and team leads stay at roughly 60 percent hands-on. Human-centered is why experience design engineering is a portfolio rather than a service. Build to last is why modernization capacity is protected at portfolio level instead of competing with features. Blameless learning is why site reliability reports against team-owned error budgets rather than owning them. A value that cannot be traced to a structural decision is decoration.</span>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">02</span><h2>The design problem</h2></div>
+    <div class="lead-copy" style="margin-top:24px;">
+      <p>Flatness is not a structural choice. It is a downstream consequence of two things: how much <strong>cognitive load</strong> each team carries, and how much coordination has to pass through humans rather than through contracts. Hierarchy exists to absorb coordination overhead. Remove the layers without removing the overhead and it reappears immediately as meetings, escalations, and shadow leads with no title and no authority.</p>
+      <p>So the question is not how few layers we can survive with. It is <strong>what has to be made explicit</strong> so that the layers become unnecessary. Everything in this document follows from that: team sizing that caps load, service contracts that replace escalation paths, and decision rights written down before launch rather than discovered under pressure.</p>
+      <p>Four constraints shape the answer. There are <strong>three user-facing portfolios</strong> that must move at their own pace. There is a <strong>central engineering portfolio</strong> holding the platform, site reliability, and shared backend domains such as geospatial and language, which every application depends on and none of them owns. There is <strong>experience design engineering</strong>, which owns research, the design system, and the front-end craft that decides whether a reimagined application is actually better than the one it replaces. And every portfolio carries <strong>legacy applications and technical debt</strong> that have to be modernized while delivery continues.</p>
+      <p>The last constraint is the one most organization designs get wrong. Modernization is not a project that runs alongside the org chart. It is a property of how ownership is assigned.</p>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">03</span><h2>What we drew from</h2></div>
+    <p class="sec-sub">Five established models, each with something worth taking and something worth leaving. None of them transfers whole.</p>
+
+    <div class="models">
+
+      <div class="model">
+        <div class="model-head">
+          <div><span class="src">Spotify · Kniberg 2012, Lee 2020</span><h3>Squads, tribes, chapters, guilds</h3></div>
+          <span class="verdict no">Rejected</span>
+        </div>
+        <div class="proscons">
+          <div class="pros">
+            <h4>Worth taking</h4>
+            <ul>
+              <li>Correctly identifies that craft development needs somewhere to live when teams are autonomous.</li>
+              <li>Squad-level autonomy over the backlog is the right instinct and survives in the stream-aligned model.</li>
+              <li>The vocabulary is widely understood, which lowers the cost of explaining any org to stakeholders.</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Worth leaving</h4>
+            <ul>
+              <li>It was aspirational documentation of a single moment, not a working model. Kniberg attached a disclaimer to his own paper.</li>
+              <li>Spotify's own 2020 retrospective describes autonomy without alignment producing duplicated infrastructure and weak cross-squad accountability.</li>
+              <li>Chapter leads managed people whose work they could not see, which is the specific failure to avoid.</li>
+              <li>Tribes are a division by another name, typically 40 to 150 people. That directly violates the flatness constraint.</li>
+              <li>Chapters and guilds are a second network with its own leads and its own cadence. That is a layer in everything but name, and it competes with the team lead for the same attention.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="take"><b>Reject the structure entirely.</b> Craft standards, practice, and technical community live with the principal engineers and the architecture council rather than in a parallel network. One horizontal structure is a compensating control; two is a matrix.</p>
+      </div>
+
+      <div class="model">
+        <div class="model-head">
+          <div><span class="src">Netflix · highly aligned, loosely coupled</span><h3>Context not control, full-cycle developers</h3></div>
+          <span class="verdict">Partial</span>
+        </div>
+        <div class="proscons">
+          <div class="pros">
+            <h4>Worth taking</h4>
+            <ul>
+              <li>The paved road is the clearest articulation of platform-as-product anywhere in the industry.</li>
+              <li>Full-cycle ownership, where teams operate what they build, eliminates handoff queues. That is where most delivery latency hides.</li>
+              <li>Genuinely flat at scale, which proves the shape is achievable.</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Worth leaving</h4>
+            <ul>
+              <li>Entirely predicated on uniform talent density and the ability to exit people quickly. Neither condition holds here.</li>
+              <li>Netflix mostly deletes rather than modernizes. There is no legacy migration pattern to borrow.</li>
+              <li>The paved road took years and sustained investment to build. Adopting the philosophy without the platform produces drift.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="take"><b>Take:</b> the paved road and full-cycle ownership. <b>Leave:</b> the staffing and performance philosophy.</p>
+      </div>
+
+      <div class="model">
+        <div class="model-head">
+          <div><span class="src">Skelton &amp; Pais 2019</span><h3>Team Topologies</h3></div>
+          <span class="verdict">Primary framework</span>
+        </div>
+        <div class="proscons">
+          <div class="pros">
+            <h4>Worth taking</h4>
+            <ul>
+              <li>The four team types map onto this problem almost exactly, including the awkward parts.</li>
+              <li>Geospatial and language are textbook complicated-subsystem teams: specialist depth that would overload any application team asked to absorb it.</li>
+              <li>The three interaction modes replace hierarchy with written contracts. This is the actual mechanism that makes flat viable.</li>
+              <li>Cognitive load as the team sizing rule, rather than headcount or utilization.</li>
+              <li>The inverse Conway maneuver gives a deliberate lever on architecture through org shape.</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Worth leaving</h4>
+            <ul>
+              <li>It is a design vocabulary, not an operating model. Silent on career ladders, performance management, funding, and acquisition.</li>
+              <li>Easy to fake. Renaming existing teams to the four types while changing nothing is the most common adoption failure.</li>
+              <li>Enabling teams are always the first capacity raided when delivery pressure arrives.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="take"><b>Take:</b> the whole skeleton, with the gaps filled from the other four models.</p>
+      </div>
+
+      <div class="model">
+        <div class="model-head">
+          <div><span class="src">Amazon · two-pizza teams</span><h3>Single-threaded ownership</h3></div>
+          <span class="verdict">Partial</span>
+        </div>
+        <div class="proscons">
+          <div class="pros">
+            <h4>Worth taking</h4>
+            <ul>
+              <li>Unambiguous decision rights. Every domain has exactly one owner who can say yes without convening anyone.</li>
+              <li>Coordination happens through APIs rather than meetings, which is precisely what lets a flat org scale past 200.</li>
+              <li>Ownership is durable rather than project-scoped, which suits a modernization horizon measured in years.</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Worth leaving</h4>
+            <ul>
+              <li>Tolerates expensive duplication as the price of autonomy. The headcount here does not support that.</li>
+              <li>Requires real service isolation, which the legacy estate will not provide until modernization is well advanced.</li>
+              <li>Service proliferation without platform discipline produces a distributed monolith, which is strictly worse than what exists now.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="take"><b>Take:</b> single-threaded ownership as the decision-rights layer. <b>Leave:</b> the tolerance for duplication.</p>
+      </div>
+
+      <div class="model">
+        <div class="model-head">
+          <div><span class="src">The default · functional matrix</span><h3>Discipline-based resourcing</h3></div>
+          <span class="verdict no">Rejected</span>
+        </div>
+        <div class="proscons">
+          <div class="pros">
+            <h4>Worth taking</h4>
+            <ul>
+              <li>Easy resource management and clear career homes by discipline.</li>
+              <li>Absorbs staffing volatility well, which matters in a contracted environment.</li>
+              <li>Familiar to contracting, staffing, and oversight, so it needs no explanation.</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Worth leaving</h4>
+            <ul>
+              <li>Optimizes utilization rather than flow. Every engineer looks busy and nothing ships.</li>
+              <li>Guarantees handoffs, which produces component teams instead of value-stream teams.</li>
+              <li>Conway's Law then bakes those handoffs permanently into the architecture, where they outlive the org chart that created them.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="take"><b>Reject</b> as the primary shape. Some functional pooling remains legitimate for programmatics and test infrastructure, and only there.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">04</span><h2>The shape</h2></div>
+    <p class="sec-sub">Team Topologies as the skeleton, the paved road as the central engineering operating model, single-threaded ownership as the decision layer, and one architecture council in place of a division tier.</p>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">A</span>
+        <div><h3>Five portfolios, one direction of dependency</h3>
+        <p>Three application portfolios own user-facing value streams end to end, including the legacy systems they are replacing. Experience design engineering owns research, the design system, and front-end craft, and works into all three. Central engineering holds the platform, site reliability, the shared backend domains, and the enabling capacity. Every connection is a service contract, not a reporting line. The outer paths are the reminder that application portfolios consume central engineering directly and do not route through design.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 438" role="img" aria-label="Three user-facing application portfolios sit above an experience design engineering portfolio and a central engineering portfolio containing platform, site reliability, domain services, and enabling teams. Outer paths show application portfolios consuming central engineering directly.">
+          <defs><marker id="ar-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <text class="d-zonelabel" x="50" y="28">USER-FACING PORTFOLIOS</text>
+          <g class="n-serve"><rect class="d-box" x="50" y="44" width="250" height="62" rx="10"/><text class="d-title" x="175" y="71" text-anchor="middle">App portfolio 1</text><text class="d-sub" x="175" y="91" text-anchor="middle">stream-aligned teams</text></g>
+          <g class="n-serve"><rect class="d-box" x="325" y="44" width="250" height="62" rx="10"/><text class="d-title" x="450" y="71" text-anchor="middle">App portfolio 2</text><text class="d-sub" x="450" y="91" text-anchor="middle">stream-aligned teams</text></g>
+          <g class="n-serve"><rect class="d-box" x="600" y="44" width="250" height="62" rx="10"/><text class="d-title" x="725" y="71" text-anchor="middle">App portfolio 3</text><text class="d-sub" x="725" y="91" text-anchor="middle">stream-aligned teams</text></g>
+          <line class="d-arrow" x1="175" y1="106" x2="175" y2="150" marker-end="url(#ar-a)"/>
+          <line class="d-arrow" x1="450" y1="106" x2="450" y2="150" marker-end="url(#ar-a)"/>
+          <line class="d-arrow" x1="725" y1="106" x2="725" y2="150" marker-end="url(#ar-a)"/>
+          <g class="n-xde"><rect class="d-box" x="40" y="154" width="820" height="72" rx="10"/><text class="d-title" x="450" y="182" text-anchor="middle">Experience design engineering</text><text class="d-sub" x="450" y="204" text-anchor="middle">research · design system · front-end craft · accessibility</text></g>
+          <line class="d-arrow" x1="450" y1="226" x2="450" y2="270" marker-end="url(#ar-a)"/>
+          <path class="d-arrow" d="M50 75 L24 75 L24 341 L60 341" marker-end="url(#ar-a)"/>
+          <path class="d-arrow" d="M850 75 L876 75 L876 341 L840 341" marker-end="url(#ar-a)"/>
+          <rect class="d-zone" x="40" y="274" width="820" height="124" rx="14"/>
+          <text class="d-zonelabel" x="62" y="298">CENTRAL ENGINEERING</text>
+          <g class="n-hot"><rect class="d-box" x="64" y="310" width="184" height="62" rx="9"/><text class="d-title" x="156" y="337" text-anchor="middle">Platform</text><text class="d-sub" x="156" y="357" text-anchor="middle">paved road</text></g>
+          <g class="n-warm"><rect class="d-box" x="260" y="310" width="184" height="62" rx="9"/><text class="d-title" x="352" y="337" text-anchor="middle">Site reliability</text><text class="d-sub" x="352" y="357" text-anchor="middle">tooling · tier 1 and 2</text></g>
+          <g class="n-cool"><rect class="d-box" x="456" y="310" width="184" height="62" rx="9"/><text class="d-title" x="548" y="337" text-anchor="middle">Domain services</text><text class="d-sub" x="548" y="357" text-anchor="middle">geospatial, language</text></g>
+          <g class="n-in"><rect class="d-box" x="652" y="310" width="184" height="62" rx="9"/><text class="d-title" x="744" y="337" text-anchor="middle">Enabling</text><text class="d-sub" x="744" y="357" text-anchor="middle">time-boxed uplift</text></g>
+          <text class="d-sub" x="450" y="422" text-anchor="middle">every line is a service contract, not a reporting line</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="callout">
+      <h3>Central engineering is a product organization, not a service desk</h3>
+      <p>This is the single move the whole design depends on. Central engineering has four customers, a published roadmap, a product manager, and adoption as its primary metric. It does not take tickets and it does not gate releases. Application teams may route around it, and if they do, that is a signal about the platform rather than a failure of compliance.</p>
+      <p>Central engineering is funded on its own line at 25 to 30 percent of total engineering, and experience design engineering at 8 to 12 percent. Below those thresholds each becomes a bottleneck: the platform gets rebuilt three times in parallel, and design becomes a queue that application teams learn to skip.</p>
+      <p>Site reliability is the one deliberate exception to pure self-service. It provides tooling, telemetry, runbooks, and operational documentation as a product, and it also holds first and second line response for the portfolio. That second duty is an operational contract rather than a platform service, and it is called out separately in section 06 because it is the place this design most obviously departs from full-cycle team ownership.</p>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">05</span><h2>Team types</h2></div>
+    <p class="sec-sub">Four types, sized by cognitive load rather than headcount. The proportions matter more than the labels.</p>
+
+    <div class="ladder">
+      <div class="tier" style="--tc:var(--accent);">
+        <div class="zoom"><span class="z">18</span><span class="lbl">teams</span></div>
+        <div>
+          <div class="cadence">STREAM-ALIGNED · 3 app portfolios</div>
+          <p class="desc">Own a user-facing value stream end to end, including the legacy system it replaces. Seven to nine people. They build it, they own its behavior in production, and they are the final escalation for it. <b>Each team owns exactly one stream and no team owns two.</b></p>
+          <div class="meter"><i style="width:70%"></i></div>
+        </div>
+      </div>
+      <div class="tier" style="--tc:var(--hot);">
+        <div class="zoom"><span class="z">3</span><span class="lbl">teams</span></div>
+        <div>
+          <div class="cadence">PLATFORM · central engineering</div>
+          <p class="desc">Build the thinnest viable platform that makes the common path fast: build and deploy, observability, identity, data access, environment provisioning. <b>Consumed as a self-service product, never as an approval step.</b></p>
+          <div class="meter"><i style="width:12%"></i></div>
+        </div>
+      </div>
+      <div class="tier" style="--tc:var(--warm);">
+        <div class="zoom"><span class="z">2</span><span class="lbl">teams</span></div>
+        <div>
+          <div class="cadence">SITE RELIABILITY · central engineering</div>
+          <p class="desc">Reliability tooling, telemetry, SLO instrumentation, runbooks, and operational documentation as a product, plus first and second line response across the portfolio. <b>Owning teams set the SLOs and take third line; SRE never owns the system itself.</b></p>
+          <div class="meter"><i style="width:7%"></i></div>
+        </div>
+      </div>
+      <div class="tier" style="--tc:var(--cool);">
+        <div class="zoom"><span class="z">3</span><span class="lbl">teams</span></div>
+        <div>
+          <div class="cadence">COMPLICATED SUBSYSTEM · shared domains</div>
+          <p class="desc">Geospatial, language, and the other backend domains where specialist depth is real and would overload any application team asked to absorb it. <b>Exposed as versioned services with published contracts, not as embedded specialists on loan.</b></p>
+          <div class="meter"><i style="width:12%"></i></div>
+        </div>
+      </div>
+      <div class="tier" style="--tc:var(--violet);">
+        <div class="zoom"><span class="z">3</span><span class="lbl">teams</span></div>
+        <div>
+          <div class="cadence">EXPERIENCE DESIGN ENGINEERING · own portfolio</div>
+          <p class="desc">Two modes at once. Research, service design, and embedded design partnership are facilitating work into the application portfolios. The design system, component library, and accessibility tooling are a product consumed as a service. <b>Design engineers write production front-end code; this is not a handoff function.</b></p>
+          <div class="meter"><i style="width:12%"></i></div>
+        </div>
+      </div>
+      <div class="tier" style="--tc:var(--accent-dim);">
+        <div class="zoom"><span class="z">1</span><span class="lbl">team</span></div>
+        <div>
+          <div class="cadence">ENABLING · time-boxed</div>
+          <p class="desc">Three to five senior engineers who help a stream-aligned team acquire a capability it lacks, then leave. Every engagement has an explicit end date. <b>They never own a system and never become a permanent dependency.</b></p>
+          <div class="meter"><i style="width:4%"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">Sizing</span>
+      <span>Seven to nine people per team. Six teams per application portfolio, three in experience design engineering, and eight to nine in central engineering. That holds roughly 210 to 230 people across two reporting layers. Central engineering carries the widest span by some distance, which is the reason it is led by a pair rather than a single director and the first place to watch for strain. The moment a team needs a tenth person, the correct response is to split the stream, not to grow the team.</span>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">06</span><h2>The contracts</h2></div>
+    <p class="sec-sub">This is what replaces the layers. Every pair of teams that needs each other has one of three relationships, written down, with a named owner on each side.</p>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">B</span>
+        <div><h3>Three interaction modes, and one operational contract</h3>
+        <p>Default to X-as-a-service, because it costs the least coordination. Collaboration is expensive and deliberately time-boxed: two teams working closely for a defined period to discover an interface that does not exist yet, after which the relationship converts to a service. Facilitating is how enabling and experience design engineering work into application teams. The last row is the exception: first and second line response is an operational contract rather than a service boundary, and it is the one relationship in this design where another team acts on a system it does not own.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 430" role="img" aria-label="Five relationships: stream-aligned teams consume the platform and the design system as services, collaborate temporarily with domain services, receive facilitation from experience design engineering and the enabling team, and hand first and second line response to site reliability under an operational contract.">
+          <defs><marker id="ar-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <g class="n-serve"><rect class="d-box" x="40" y="26" width="230" height="58" rx="9"/><text class="d-title" x="155" y="51" text-anchor="middle">Stream-aligned team</text><text class="d-sub" x="155" y="70" text-anchor="middle">any app portfolio</text></g>
+          <line class="d-arrow" x1="274" y1="55" x2="404" y2="55" marker-end="url(#ar-b)"/>
+          <g class="n-hot"><rect class="d-box" x="410" y="26" width="230" height="58" rx="9"/><text class="d-title" x="525" y="51" text-anchor="middle">Platform</text><text class="d-sub" x="525" y="70" text-anchor="middle">paved road</text></g>
+          <text class="d-title" x="665" y="50">X-as-a-service</text>
+          <text class="d-sub" x="665" y="70">self-serve · no ticket</text>
+
+          <g class="n-serve"><rect class="d-box" x="40" y="104" width="230" height="58" rx="9"/><text class="d-title" x="155" y="129" text-anchor="middle">Stream-aligned team</text><text class="d-sub" x="155" y="148" text-anchor="middle">defining new capability</text></g>
+          <line class="d-arrow" x1="274" y1="133" x2="404" y2="133" marker-end="url(#ar-b)"/>
+          <g class="n-cool"><rect class="d-box" x="410" y="104" width="230" height="58" rx="9"/><text class="d-title" x="525" y="129" text-anchor="middle">Domain services</text><text class="d-sub" x="525" y="148" text-anchor="middle">geospatial, language</text></g>
+          <text class="d-title" x="665" y="128">Collaboration</text>
+          <text class="d-sub" x="665" y="148">bounded · becomes a service</text>
+
+          <g class="n-xde"><rect class="d-box" x="40" y="182" width="230" height="58" rx="9"/><text class="d-title" x="155" y="207" text-anchor="middle">Experience design eng</text><text class="d-sub" x="155" y="226" text-anchor="middle">research + design partner</text></g>
+          <line class="d-arrow" x1="274" y1="211" x2="404" y2="211" marker-end="url(#ar-b)"/>
+          <g class="n-serve"><rect class="d-box" x="410" y="182" width="230" height="58" rx="9"/><text class="d-title" x="525" y="207" text-anchor="middle">Stream-aligned team</text><text class="d-sub" x="525" y="226" text-anchor="middle">in formative design</text></g>
+          <text class="d-title" x="665" y="206">Facilitating</text>
+          <text class="d-sub" x="665" y="226">design system is XaaS</text>
+
+          <g class="n-in"><rect class="d-box" x="40" y="260" width="230" height="58" rx="9"/><text class="d-title" x="155" y="285" text-anchor="middle">Enabling team</text><text class="d-sub" x="155" y="304" text-anchor="middle">3 to 5 senior engineers</text></g>
+          <line class="d-arrow" x1="274" y1="289" x2="404" y2="289" marker-end="url(#ar-b)"/>
+          <g class="n-serve"><rect class="d-box" x="410" y="260" width="230" height="58" rx="9"/><text class="d-title" x="525" y="285" text-anchor="middle">Stream-aligned team</text><text class="d-sub" x="525" y="304" text-anchor="middle">acquiring a capability</text></g>
+          <text class="d-title" x="665" y="284">Facilitating</text>
+          <text class="d-sub" x="665" y="304">8 to 12 weeks · exit set</text>
+
+          <g class="n-warm"><rect class="d-box" x="40" y="338" width="230" height="58" rx="9"/><text class="d-title" x="155" y="363" text-anchor="middle">Site reliability</text><text class="d-sub" x="155" y="382" text-anchor="middle">tier 1 and 2 response</text></g>
+          <line class="d-arrow" x1="274" y1="367" x2="404" y2="367" marker-end="url(#ar-b)"/>
+          <g class="n-serve"><rect class="d-box" x="410" y="338" width="230" height="58" rx="9"/><text class="d-title" x="525" y="363" text-anchor="middle">Stream-aligned team</text><text class="d-sub" x="525" y="382" text-anchor="middle">owns SLO · takes tier 3</text></g>
+          <text class="d-title" x="665" y="362">Operational contract</text>
+          <text class="d-sub" x="665" y="382">the deliberate exception</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="scope-grid">
+      <div class="scope-col done">
+        <h3>Every contract states</h3>
+        <ul>
+          <li>The named owner on each side, one person, not a team alias</li>
+          <li>What is provided, in the consumer's language rather than the provider's</li>
+          <li>How it is consumed, and whether consumption requires anyone's permission</li>
+          <li>Expected response time for support, and what counts as an escalation</li>
+          <li>How breaking changes are announced and how long the old version survives</li>
+          <li>The review date, because contracts that never expire stop being read</li>
+          <li>For site reliability only: the escalation threshold at which the owning team is paged</li>
+        </ul>
+      </div>
+      <div class="scope-col open">
+        <h3>Signals the contract has failed</h3>
+        <ul>
+          <li>An application team builds its own version of something the platform provides</li>
+          <li>A collaboration mode has been running for more than one quarter</li>
+          <li>An enabling engagement has no exit date, or the date has already slipped twice</li>
+          <li>A significant incident is closed without the owning team ever being brought in</li>
+          <li>Design arrives after the architecture is set, which makes it decoration rather than design</li>
+          <li>A domain service change requires a coordinated release across portfolios</li>
+          <li>Requests between teams are routed through a portfolio lead instead of directly</li>
+          <li>Anyone needs a meeting to find out who owns something</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">07</span><h2>Where leadership lives</h2></div>
+    <p class="sec-sub">Two reporting layers vertically. Everything else that would normally require a layer is handled by a single council with no reporting authority over anyone.</p>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">C</span>
+        <div><h3>The vertical: two layers, and that is all</h3>
+        <p>Each portfolio is led by a chief engineer and a program lead operating as equals, two in a box, with the same reports and different accountabilities. Team leads report directly to that pair. There is no layer between a team lead and a portfolio lead, and no layer between a portfolio lead and the head of engineering. Spans run from three in experience design engineering to nine in central engineering, which is defensible without being comfortable at the top end.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 310" role="img" aria-label="A head of engineering with five portfolio leadership pairs reporting directly, and roughly thirty team leads reporting to those pairs. Two reporting layers total.">
+          <defs><marker id="ar-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <g class="n-in"><rect class="d-box" x="340" y="26" width="220" height="58" rx="9"/><text class="d-title" x="450" y="51" text-anchor="middle">Head of engineering</text><text class="d-sub" x="450" y="70" text-anchor="middle">5 direct reports</text></g>
+          <line class="d-arrow" x1="437" y1="84" x2="110" y2="116" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="443" y1="84" x2="281" y2="116" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="450" y1="84" x2="450" y2="116" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="457" y1="84" x2="620" y2="116" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="463" y1="84" x2="791" y2="116" marker-end="url(#ar-c)"/>
+          <g class="n-serve"><rect class="d-box" x="22" y="118" width="165" height="66" rx="9"/><text class="d-title" x="104" y="145" text-anchor="middle">App portfolio 1</text><text class="d-sub" x="104" y="164" text-anchor="middle">chief eng + program</text></g>
+          <g class="n-serve"><rect class="d-box" x="195" y="118" width="165" height="66" rx="9"/><text class="d-title" x="277" y="145" text-anchor="middle">App portfolio 2</text><text class="d-sub" x="277" y="164" text-anchor="middle">chief eng + program</text></g>
+          <g class="n-serve"><rect class="d-box" x="368" y="118" width="165" height="66" rx="9"/><text class="d-title" x="450" y="145" text-anchor="middle">App portfolio 3</text><text class="d-sub" x="450" y="164" text-anchor="middle">chief eng + program</text></g>
+          <g class="n-xde"><rect class="d-box" x="541" y="118" width="165" height="66" rx="9"/><text class="d-title" x="623" y="145" text-anchor="middle">Experience design</text><text class="d-sub" x="623" y="164" text-anchor="middle">chief + design lead</text></g>
+          <g class="n-hot"><rect class="d-box" x="714" y="118" width="165" height="66" rx="9"/><text class="d-title" x="796" y="145" text-anchor="middle">Central eng</text><text class="d-sub" x="796" y="164" text-anchor="middle">chief eng + product</text></g>
+          <line class="d-arrow" x1="104" y1="184" x2="104" y2="216" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="277" y1="184" x2="277" y2="216" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="450" y1="184" x2="450" y2="216" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="623" y1="184" x2="623" y2="216" marker-end="url(#ar-c)"/>
+          <line class="d-arrow" x1="796" y1="184" x2="796" y2="216" marker-end="url(#ar-c)"/>
+          <g class="n-in"><rect class="d-box" x="22" y="218" width="857" height="58" rx="9"/><text class="d-title" x="450" y="243" text-anchor="middle">~30 team leads</text><text class="d-sub" x="450" y="262" text-anchor="middle">player-coach · 7 to 9 engineers each · owns performance for their team</text></g>
+          <text class="d-sub" x="450" y="300" text-anchor="middle">two reporting layers · no divisions, branches, or groups in between</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">D</span>
+        <div><h3>The horizontal: what replaces the missing layer</h3>
+        <p>The architecture council is the only compensating control for having no division tier, and deliberately the only one. Chief engineers plus principal engineers plus the platform product manager, meeting on a fixed cadence, owning every decision that crosses a portfolio boundary and every craft standard that has to hold across portfolios. It has no reporting authority over anyone, which is precisely what keeps it from becoming a layer. A second horizontal network, whatever it is called, would be a matrix.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 230" role="img" aria-label="An architecture council spans all five portfolios, connected by dashed lines indicating influence without reporting authority.">
+          <rect class="d-zone" x="40" y="24" width="820" height="64" rx="12"/>
+          <text class="d-title" x="450" y="50" text-anchor="middle">Architecture council</text>
+          <text class="d-sub" x="450" y="72" text-anchor="middle">5 chief engineers · 4 to 6 principals · platform PM · owns cross-portfolio ADRs and craft standards</text>
+          <line class="d-soft" x1="104" y1="126" x2="104" y2="92"/>
+          <line class="d-soft" x1="277" y1="126" x2="277" y2="92"/>
+          <line class="d-soft" x1="450" y1="126" x2="450" y2="92"/>
+          <line class="d-soft" x1="623" y1="126" x2="623" y2="92"/>
+          <line class="d-soft" x1="796" y1="126" x2="796" y2="92"/>
+          <g class="n-serve"><rect class="d-box" x="22" y="128" width="165" height="56" rx="9"/><text class="d-title" x="104" y="161" text-anchor="middle">App portfolio 1</text></g>
+          <g class="n-serve"><rect class="d-box" x="195" y="128" width="165" height="56" rx="9"/><text class="d-title" x="277" y="161" text-anchor="middle">App portfolio 2</text></g>
+          <g class="n-serve"><rect class="d-box" x="368" y="128" width="165" height="56" rx="9"/><text class="d-title" x="450" y="161" text-anchor="middle">App portfolio 3</text></g>
+          <g class="n-xde"><rect class="d-box" x="541" y="128" width="165" height="56" rx="9"/><text class="d-title" x="623" y="161" text-anchor="middle">Experience design</text></g>
+          <g class="n-hot"><rect class="d-box" x="714" y="128" width="165" height="56" rx="9"/><text class="d-title" x="796" y="161" text-anchor="middle">Central eng</text></g>
+          <text class="d-sub" x="450" y="212" text-anchor="middle">membership, not authority</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="roles">
+      <div class="r-row"><span>Role</span><span>Count</span><span>What it owns</span></div>
+      <div class="r-row r-key"><span class="r-name">Portfolio chief engineer</span><span class="r-count">5</span><span class="r-owns">Architecture authority inside the portfolio, owns its ADRs, sits on the architecture council. In experience design engineering this role is held by a design engineer, not a designer who does not ship code. There is no separate architect caste above any of them.</span></div>
+      <div class="r-row"><span class="r-name">Portfolio program lead</span><span class="r-count">5</span><span class="r-owns">Peer to the chief engineer, not subordinate. Scope, schedule, budget, stakeholder management, and the acquisition interface.</span></div>
+      <div class="r-row r-key"><span class="r-name">Team lead</span><span class="r-count">~30</span><span class="r-owns">Player-coach at roughly 60 percent hands-on. Owns delivery and performance for six to nine people. The load-bearing role, and the one most likely to break.</span></div>
+      <div class="r-row"><span class="r-name">Principal engineer</span><span class="r-count">4–6</span><span class="r-owns">No direct reports. Assigned to seams rather than orgs. Owns the cross-portfolio problems that no single team can solve alone, and carries the craft standards that would otherwise require a separate practice network.</span></div>
+      <div class="r-row"><span class="r-name">Platform product manager</span><span class="r-count">1</span><span class="r-owns">Treats the three application portfolios as customers. Owns the platform roadmap and is measured on adoption rather than throughput.</span></div>
+      <div class="r-row"><span class="r-name">Site reliability lead</span><span class="r-count">1</span><span class="r-owns">Owns the operational contract: response targets, escalation thresholds, and the point at which an unreliable system is handed back to its owning team. Reports into central engineering, not into any application portfolio.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">08</span><h2>Programmatics and funding</h2></div>
+    <p class="sec-sub">The part that decides whether the design survives contact with the budget cycle.</p>
+
+    <div class="grid">
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="18" cy="17" r="3"/></svg>
+        <h3>Two in a box, per portfolio</h3>
+        <p>Chief engineer and program lead as equals with the same reports. Technical authority and programmatic authority sit side by side rather than stacked, which removes the most common reason to add a layer.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg>
+        <h3>One central programmatics cell</h3>
+        <p>Five to eight people covering contracts, financial management, staffing, and metrics for all four portfolios. Shared service, thin, and deliberately not replicated per portfolio.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v18M5 8l7-5 7 5"/><path d="M5 16l7 5 7-5"/></svg>
+        <h3>No project managers on teams</h3>
+        <p>A PM per team rebuilds the matrix by accident within two quarters. Program management sits at portfolio level and teams manage their own flow. The same rule applies to designers: they belong on the team, not assigned to it.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l5-6 4 4 5-8 4 5"/><path d="M3 20h18"/></svg>
+        <h3>Flow metrics, not utilization</h3>
+        <p>Lead time, deployment frequency, change failure rate, time to restore. Utilization reporting drives the wrong behavior and is the leading indicator of matrix relapse.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7z"/><path d="M9 12l2 2 4-4"/></svg>
+        <h3>Persistent capacity, not projects</h3>
+        <p>Fund teams as durable capacity against a value stream. Project-based funding forces reteaming at every award boundary, which destroys the ownership the model depends on.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <h3>Decision rights in writing</h3>
+        <p>Single-threaded owner per domain, ADRs for anything crossing a seam. Flat without explicit decision rights is slower than hierarchy, not faster.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">09</span><h2>Modernization</h2></div>
+    <p class="sec-sub">Every portfolio carries legacy systems and debt. How ownership is assigned decides whether they ever get paid down.</p>
+
+    <div class="lead-copy" style="margin-top:24px;">
+      <p><strong>Do not create legacy teams and new-build teams.</strong> It is the most common structure and the most reliably destructive one. It produces a two-class system, concentrates the highest-risk institutional knowledge in the people with the least career upside, and creates a permanent information asymmetry between the team that knows how the system actually behaves and the team designing its replacement. Every organization that has tried it has regretted it, usually around month fourteen when the first cutover fails.</p>
+      <p>The alternative is that <strong>the same stream-aligned team owns both the legacy application and its replacement</strong>, and strangles one into the other incrementally. The team that owns the old system's behavior is the team that designs the new one, which aligns the incentive to make the migration real rather than nominal.</p>
+      <p>Reimagining is where experience design engineering earns its portfolio. A strangler migration that ports the existing screens one for one produces a modern stack running a legacy experience, which is the most expensive way to change nothing. <strong>Design partnership belongs at the front of each strangler cut</strong>, before the service boundaries are set, because the boundaries and the user journey have to be decided together. Site reliability matters here too, for a duller reason: you cannot cut traffic over safely without comparable telemetry on both sides, and building that is SRE work rather than something each team invents mid-migration.</p>
+    </div>
+
+    <div class="scope-grid">
+      <div class="scope-col done">
+        <h3>What makes it work</h3>
+        <ul>
+          <li>Same team owns the legacy system and its replacement, with no handoff at any point</li>
+          <li>Strangler fig, never a parallel rewrite with a big-bang cutover</li>
+          <li>Protected capacity allocation of 20 to 30 percent, set at portfolio level</li>
+          <li>The allocation is defended by the program lead and is not renegotiable per sprint</li>
+          <li>The enabling team makes the first cut with each portfolio, transfers the pattern, and exits</li>
+          <li>Platform capability runs one portfolio ahead of the first migration that needs it</li>
+          <li>Design partnership starts before service boundaries are fixed, not after</li>
+          <li>Comparable telemetry on the old and new paths before any traffic moves</li>
+        </ul>
+      </div>
+      <div class="scope-col open">
+        <h3>What kills it</h3>
+        <ul>
+          <li>Debt work that has to compete with features for capacity, because it loses every time</li>
+          <li>A modernization program with its own org, schedule, and reporting chain</li>
+          <li>Three portfolios migrating simultaneously against an immature platform</li>
+          <li>Treating the legacy system as frozen, which guarantees the replacement chases a moving target</li>
+          <li>Measuring migration by percentage of code moved rather than percentage of traffic served</li>
+          <li>Porting existing screens one for one, which modernizes the stack and nothing else</li>
+          <li>An enabling engagement that quietly becomes permanent ownership</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">Sequencing</span>
+      <span>Platform capability has to land roughly one portfolio ahead of the first modernization effort that depends on it. If all three portfolios start migrating before the paved road exists, each invents its own answer, and the resulting divergence is harder to unwind than the debt they set out to retire.</span>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">10</span><h2>Standing it up</h2></div>
+    <p class="sec-sub">Six phases across roughly nine months. The order matters more than the dates.</p>
+
+    <div class="roadmap">
+      <div class="phase">
+        <div class="phase-head"><div><span class="pnum">Phase 0</span><h3>Name the seams</h3></div><span class="cost-tag">Weeks 0–4</span></div>
+        <p class="pdesc">Before any reorganization, map the value streams and the dependencies between them. Decide what belongs in central engineering and what does not, and confirm the dedicated funding lines are in place before anyone is asked to depend on a shared function. This is where the inverse Conway maneuver gets its leverage, because the boundaries drawn here become the architecture whether or not anyone intends it.</p>
+        <div class="caps"><span class="cap">Value stream map</span><span class="cap">Dependency inventory</span><span class="cap">Central vs local test</span><span class="cap">Funding lines confirmed</span></div>
+      </div>
+      <div class="phase">
+        <div class="phase-head"><div><span class="pnum">Phase 1</span><h3>Stand up central engineering first</h3></div><span class="cost-tag">Weeks 2–10</span></div>
+        <p class="pdesc">Central engineering goes first, not last. Name the chief engineer and product manager, publish an initial roadmap, and ship the first paved road capability before any application portfolio is asked to depend on it. Stand up site reliability in the same window with tooling and telemetry only; the tier 1 and 2 response contract turns on in phase 3, once there is something worth instrumenting and a written escalation threshold. A platform announced ahead of its first working capability loses credibility it does not get back.</p>
+        <div class="caps"><span class="cap">Platform PM named</span><span class="cap">Thinnest viable platform</span><span class="cap">First paved road capability</span><span class="cap">SRE telemetry baseline</span><span class="cap">Adoption metric live</span></div>
+      </div>
+      <div class="phase">
+        <div class="phase-head"><div><span class="pnum">Phase 2</span><h3>Cut over the application and design portfolios</h3></div><span class="cost-tag">Weeks 6–16</span></div>
+        <p class="pdesc">Name the five leadership pairs, form stream-aligned teams around value streams rather than around existing components, and assign every legacy system to the team that will replace it. Stand up experience design engineering in the same window and start the design system before the first migration rather than during it. Expect this phase to surface the systems nobody wanted to own, which is useful information rather than a setback.</p>
+        <div class="caps"><span class="cap">Leadership pairs named</span><span class="cap">Teams formed</span><span class="cap">Legacy ownership assigned</span><span class="cap">Design system v0</span><span class="cap">Team API published</span></div>
+      </div>
+      <div class="phase">
+        <div class="phase-head"><div><span class="pnum">Phase 3</span><h3>Write the contracts</h3></div><span class="cost-tag">Weeks 10–18</span></div>
+        <p class="pdesc">Every team publishes what it provides, how it is consumed, who owns it, and what response time to expect. Every cross-team relationship is classified as one of the three interaction modes, with the site reliability operational contract written separately because it is not a service boundary. Anything that does not fit gets escalated to the architecture council as a design problem, not resolved informally.</p>
+        <div class="caps"><span class="cap">Team APIs</span><span class="cap">Interaction modes assigned</span><span class="cap">SRE escalation thresholds</span><span class="cap">ADR process live</span><span class="cap">Decision rights published</span></div>
+      </div>
+      <div class="phase">
+        <div class="phase-head"><div><span class="pnum">Phase 4</span><h3>Start the first strangler</h3></div><span class="cost-tag">Weeks 12–24</span></div>
+        <p class="pdesc">One portfolio, one legacy system, one enabling engagement with an explicit exit date, and design partnership from the first week rather than the last. Prove the pattern end to end, including the capacity protection holding under delivery pressure, before extending it to the other two portfolios.</p>
+        <div class="caps"><span class="cap">First cut shipped</span><span class="cap">Capacity allocation held</span><span class="cap">Design led the boundary</span><span class="cap">Enabling team exited</span><span class="cap">Pattern documented</span></div>
+      </div>
+      <div class="phase">
+        <div class="phase-head"><div><span class="pnum">Phase 5</span><h3>Prove it or adjust</h3></div><span class="cost-tag">Month 9</span></div>
+        <p class="pdesc">A structured review against the failure signals rather than a satisfaction survey. Are team leads carrying a sustainable load, and is central engineering's span of nine holding? Is the technical ladder producing promotions? Is anyone routing around the platform or the design system? Are owning teams still being paged, or has tier 3 quietly stopped ringing? Adjust the structure, not the vocabulary.</p>
+        <div class="caps"><span class="cap">Team lead load review</span><span class="cap">Central eng span check</span><span class="cap">Ladder audit</span><span class="cap">Platform + design adoption</span><span class="cap">Tier 3 page rate</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">11</span><h2>Culture</h2></div>
+    <p class="sec-sub">Structure decides what is possible. Culture decides what actually happens when the structure is inconvenient.</p>
+
+    <div class="lead-copy" style="margin-top:24px;">
+      <p>Culture is not a values poster. It is the accumulated weight of what an organization signals, celebrates, repeats, and decides, especially under pressure. Every organization has one. The only question is whether it was designed or whether it accumulated by default.</p>
+      <p>Designed cultures are built through consistent use of four levers: the <strong>signals</strong> leaders send through their attention and behavior, the <strong>stories</strong> that circulate about what the organization values, the <strong>rituals</strong> that create shared identity and rhythm, and the <strong>decisions</strong> that reveal what the organization actually believes when trade-offs are forced.</p>
+      <p>All four have to pull in the same direction: toward an engineering culture that is mission-driven, expert-led, human-centered, and psychologically safe. When they conflict, when a decision contradicts a stated value or a story circulates that rewards the wrong behavior, <strong>the inconsistency is louder than any value statement</strong>. Coherence across all four is a leadership responsibility, not a communications one.</p>
+    </div>
+
+    <div class="levers">
+
+      <div class="lever" style="--lc:var(--accent);">
+        <div class="lever-head">
+          <div class="lever-num">Lever 01 · Signals</div>
+          <h3>What leaders pay attention to</h3>
+          <p class="lever-def">Signals are the visible behaviors, artifacts, and patterns that reveal what the organization truly values, regardless of what it says it values. Engineers watch what leaders notice, reward, correct, and ignore, and over time those observations become the real operating norms. Signals include what gets celebrated, whose work gets highlighted, which metrics leaders ask about first, and how leaders behave during incidents.</p>
+        </div>
+        <div class="lever-body">
+          <div class="lever-q">Signals to build deliberately</div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Engineering quality over delivery velocity.</b> When leaders ask about code health, test coverage, and architectural decisions rather than only sprint burndown, engineers learn that quality is real and not aspirational.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Recognition of invisible work.</b> Documentation, mentoring, code review, and operational improvement are recognized publicly alongside feature delivery.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Chief engineers visible in the work.</b> Portfolio leads are expected to engage with the technical details of their domain. Their presence in design reviews and code discussions signals that expertise is expected at every level.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Retirement milestones treated as wins.</b> Cutting the last traffic off a legacy system and deleting it is celebrated as a delivery achievement, not mourned as a loss of team identity.</span></div>
+        </div>
+      </div>
+
+      <div class="lever" style="--lc:var(--violet);">
+        <div class="lever-head">
+          <div class="lever-num">Lever 02 · Stories</div>
+          <h3>What the organization remembers and repeats</h3>
+          <p class="lever-def">Stories are the narratives that travel through an organization, told in onboarding, all-hands, team meetings, and hallway conversations. They encode values more powerfully than any policy document because they are memorable, human, and specific. The stories an organization chooses to tell reveal what it actually believes. The stories it fails to tell, or quietly suppresses, reveal what it is afraid to confront.</p>
+        </div>
+        <div class="lever-body">
+          <div class="lever-q">Stories to tell actively</div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Blameless postmortem stories.</b> Specific, named examples where honest root cause analysis led to a better system, told publicly and credited to the team rather than to the individuals who failed.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Expertise over title stories.</b> Engineers whose technical judgment overrode a more senior decision and were right, told to reinforce that expertise earns authority here, not seniority alone.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>User impact stories.</b> Named examples of how a specific engineering decision, a design change, a latency reduction, a data enrichment, changed an analyst's or operator's experience. This is what connects code to mission.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Modernization origin stories.</b> Why this office exists: the cost of the legacy estate, the mission gap it creates, and the commitment to close it. Told repeatedly so engineers understand what they are part of.</span></div>
+        </div>
+      </div>
+
+      <div class="lever" style="--lc:var(--cool);">
+        <div class="lever-head">
+          <div class="lever-num">Lever 03 · Rituals</div>
+          <h3>What the organization does repeatedly</h3>
+          <p class="lever-def">Rituals are recurring practices that create shared identity, rhythm, and belonging. They differ from processes in that they carry symbolic weight beyond their functional purpose. A retrospective is a process; a blameless postmortem review is a ritual that encodes psychological safety. Rituals must reinforce the behaviors the culture is trying to build, and must be protected from cancellation when the calendar gets tight.</p>
+        </div>
+        <div class="lever-body">
+          <div class="lever-q">Rituals to establish and protect</div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Synchronized demos.</b> All teams demo on the same day each cycle. Not a status meeting, a showcase. Cross-portfolio attendance is expected from leadership, and it builds shared awareness of what the office is delivering.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Quarterly portfolio planning.</b> Office-wide alignment on cross-portfolio dependencies and goals. Creates a shared planning horizon and mutual accountability across portfolio lines.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Tradecraft sessions.</b> Monthly office-wide learning where engineers share deep technical or domain expertise. Not project updates, genuine knowledge transfer. This is where craft practice lives now that there is no separate guild network.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Blameless postmortem reviews.</b> Every significant incident produces a written postmortem and a mandatory review. The review is a ritual, not a punishment, and attendance by at least one portfolio lead signals that leadership takes learning seriously.</span></div>
+        </div>
+      </div>
+
+      <div class="lever" style="--lc:var(--hot);">
+        <div class="lever-head">
+          <div class="lever-num">Lever 04 · Decisions</div>
+          <h3>What the organization chooses when it is hard</h3>
+          <p class="lever-def">Decisions are the most powerful cultural signal and the most dangerous when they contradict stated values. Every time a trade-off is forced between mission and convenience, between quality and speed, between the right hire and the available hire, the decision reveals what the organization actually believes. One bad decision made visibly and without explanation can undo months of cultural investment. Hard decisions must be explained.</p>
+        </div>
+        <div class="lever-body">
+          <div class="lever-q">Decisions that will define this office</div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Holding the bar on expertise in leadership.</b> Refusing to fill a chief engineer role with a capable generalist when a domain expert is not yet ready, and saying why, establishes that experts leading experts is real.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Holding the modernization allocation under pressure.</b> When the protected 20 to 30 percent survives a quarter with a slipping delivery date, the office learns that the modernization mandate has teeth.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Delaying a release for quality or security.</b> When leadership chooses to delay rather than ship something that violates a standard, engineers internalize that building to last is not aspirational.</span></div>
+          <div class="lever-ex"><span class="lever-dot"></span><span class="lever-tx"><b>Protecting enabling and design capacity.</b> When facilitation time is defended against being cannibalized by delivery pressure, engineers learn that capability building is a first-class investment rather than a luxury.</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ladder-note" style="margin-top:28px;">
+      <span class="k">Coherence</span>
+      <span>The four levers are only as strong as their weakest one. An office that tells expertise-over-title stories and then promotes on tenure has not sent a mixed message; it has sent a clear one, and the story is the part nobody believes. Before adding a ritual or drafting a message, check the decisions already made this quarter and confirm they say the same thing.</span>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">12</span><h2>What will break</h2></div>
+    <p class="sec-sub">Flat is not free. These are the known costs and the compensating controls for each. Anything not paid for here will be paid for later at a worse exchange rate.</p>
+
+    <div class="risks">
+      <div class="risk">
+        <div>
+          <h3>People development has nowhere to hide</h3>
+          <p>Fifty people per portfolio with no middle layer means team leads absorb performance management, career conversations, and hiring on top of delivery. That is real work the hierarchy used to do, and removing the layer does not remove the work.</p>
+        </div>
+        <div>
+          <span class="ctl">Control</span>
+          <p class="ctl-body">Cap teams at nine. Give team leads explicit time for the management portion rather than treating it as overhead. Watch for burnout around month nine, which is when the cumulative load becomes visible.</p>
+        </div>
+      </div>
+      <div class="risk">
+        <div>
+          <h3>Promotion cannot mean getting reports</h3>
+          <p>In a flat org there are very few management roles to promote into. Without a real alternative, the strongest engineers conclude the ceiling is low and leave within eighteen months. This is the most common cause of death for flat structures.</p>
+        </div>
+        <div>
+          <span class="ctl">Control</span>
+          <p class="ctl-body">A functioning dual-track ladder where principal roles carry genuine authority over cross-cutting decisions, not just a higher salary band. Audit it annually by counting technical promotions against management promotions.</p>
+        </div>
+      </div>
+      <div class="risk">
+        <div>
+          <h3>Flat without decision rights is slower, not faster</h3>
+          <p>Removing layers removes the person who used to break ties. If nobody owns a decision, it defaults to consensus, and consensus at thirty teams is indistinguishable from paralysis.</p>
+        </div>
+        <div>
+          <span class="ctl">Control</span>
+          <p class="ctl-body">Single-threaded ownership per domain, written down before launch. ADRs for anything crossing a seam, adjudicated by the architecture council on a fixed cadence rather than on demand.</p>
+        </div>
+      </div>
+      <div class="risk">
+        <div>
+          <h3>The enabling team will get raided</h3>
+          <p>The moment a portfolio is behind schedule, three to five senior engineers with no permanent system assignment look exactly like available capacity. This happens in almost every organization that creates one.</p>
+        </div>
+        <div>
+          <span class="ctl">Control</span>
+          <p class="ctl-body">Either protect it structurally with its own funding line, or do not create it at all. A half-funded enabling team is worse than none, because it sets an expectation of support that is never delivered.</p>
+        </div>
+      </div>
+      <div class="risk">
+        <div>
+          <h3>The platform becomes a bottleneck</h3>
+          <p>Central engineering has three customers with competing priorities and no authority to say no gracefully. The failure mode is a queue, followed by application teams building their own versions of everything.</p>
+        </div>
+        <div>
+          <span class="ctl">Control</span>
+          <p class="ctl-body">Measure adoption and self-service ratio, not tickets closed. If application teams are routing around the platform, treat it as product feedback rather than a compliance problem, and fix the platform.</p>
+        </div>
+      </div>
+      <div class="risk">
+        <div>
+          <h3>Site reliability creates an ownership gap</h3>
+          <p>Handing first and second line to SRE is a deliberate retreat from full-cycle ownership, and the known consequence is that teams stop feeling accountable for reliability once someone else answers the page. Reliability then becomes SRE's problem, and SRE becomes an operations department with a modern name.</p>
+        </div>
+        <div>
+          <span class="ctl">Control</span>
+          <p class="ctl-body">Owning teams set their own SLOs and error budgets; SRE reports against them rather than owning them. Tier 3 escalation to the owning team is not optional. And SRE can hand a chronically unreliable system back, which is the only sanction that makes the arrangement honest.</p>
+        </div>
+      </div>
+      <div class="risk">
+        <div>
+          <h3>Design gets treated as a service queue</h3>
+          <p>An experience design portfolio that sits outside the delivery teams will be asked for screens after the architecture is decided. That is decoration, not design, and it produces modernized systems that users experience as unchanged.</p>
+        </div>
+        <div>
+          <span class="ctl">Control</span>
+          <p class="ctl-body">Design engineers ship production front-end code and join at the point where service boundaries are being set. If a strangler cut reaches implementation without design having shaped the journey, treat it as a process failure and say so in the review.</p>
+        </div>
+      </div>
+      <div class="risk">
+        <div>
+          <h3>Situational awareness at the top degrades</h3>
+          <p>At 200 people with two layers, the head of engineering cannot know what is happening by walking around, and there is no middle tier synthesizing it. Problems surface late and arrive fully formed.</p>
+        </div>
+        <div>
+          <span class="ctl">Control</span>
+          <p class="ctl-body">The architecture council plus a consistent portfolio-level flow metrics cadence. Flow-based rather than utilization-based, reviewed on the same day every month so that trends are visible rather than reconstructed. SRE telemetry helps here, since it is the one function with a view across all five portfolios.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ladder-note" style="margin-top:28px;">
+      <span class="k">The test</span>
+      <span>Nine months in, ask two questions. When two teams disagree about an interface, how does it get resolved? If someone escalates to a portfolio lead, the layer has grown back informally and the contracts are not doing their job. And when a mission-critical system degrades at two in the morning, does the team that built it ever find out? If the answer is not reliably yes, the operational contract has become a handoff and the ownership model is already gone.</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Organization design · 5 portfolios · ~30 teams · 2 reporting layers · planning reference, not a commitment</p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){ els.forEach(function(e){e.classList.add('in');}); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, {threshold:0.12});
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+</body>
+</html>
