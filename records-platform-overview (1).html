@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The firm's system of record · Platform overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F151B; --bg-2:#0B1015;
+    --surface:#151D25; --surface-2:#1A2530;
+    --line:#28353F; --line-2:#33454F;
+    --text:#E7EEF4; --text-dim:#93A2AF; --text-mute:#647380;
+    --accent:#D96FB4; --accent-dim:#6E2A57;
+    --hot:#E8734A; --warm:#E0A93C; --cool:#6E93B4;
+    --arrow:#5C6E7B;
+    --display:'Space Grotesk',sans-serif;
+    --body:'IBM Plex Sans',sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+    --maxw:1060px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--body); font-size:17px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  h1,h2,h3{font-family:var(--display); font-weight:600; line-height:1.15; margin:0;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--accent);
+  }
+  .section-num{
+    font-family:var(--mono); font-size:12px; color:var(--text-mute);
+    letter-spacing:.14em;
+  }
+
+  /* hero */
+  .hero{position:relative; overflow:hidden; border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#0C1218 0%, var(--bg) 100%);}
+  .tab-bg{position:absolute; inset:0; opacity:.5; pointer-events:none;
+    mask-image:radial-gradient(120% 90% at 78% 8%, #000 0%, transparent 62%);}
+  .hero-inner{position:relative; padding:82px 0 68px;}
+  .hero h1{font-size:clamp(38px,6.5vw,68px); font-weight:700; letter-spacing:-.02em; max-width:16ch;}
+  .hero h1 .accent{color:var(--accent);}
+  .hero .lede{margin:22px 0 0; font-size:clamp(17px,2.4vw,20px); color:var(--text-dim); max-width:56ch;}
+  .chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:32px;}
+  .chip{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.04em;
+    color:var(--text-dim); border:1px solid var(--line-2);
+    padding:7px 13px; border-radius:100px; background:rgba(255,255,255,.015);
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .chip .dot{width:6px; height:6px; border-radius:50%; background:var(--accent);}
+
+  /* sections */
+  section{padding:74px 0; border-bottom:1px solid var(--line);}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:8px; flex-wrap:wrap;}
+  .sec-head h2{font-size:clamp(26px,3.6vw,34px); letter-spacing:-.01em;}
+  .sec-sub{color:var(--text-dim); max-width:62ch; margin:14px 0 0; font-size:17px;}
+
+  .lead-copy p{max-width:66ch; margin:0 0 18px; color:#CBD6DE;}
+  .lead-copy p:last-child{margin-bottom:0;}
+  .lead-copy strong{color:var(--text); font-weight:600;}
+
+  /* feature grid */
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:34px;}
+  .card{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:14px; padding:22px 22px 24px; position:relative;
+    transition:border-color .25s ease, transform .25s ease;
+  }
+  .card:hover{border-color:var(--line-2); transform:translateY(-2px);}
+  .card .ico{width:34px; height:34px; margin-bottom:16px; color:var(--accent);}
+  .card h3{font-size:18px; font-weight:600; margin-bottom:7px;}
+  .card p{margin:0; font-size:15px; line-height:1.6; color:var(--text-dim);}
+
+  /* api grid */
+  .tech-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:34px;}
+  .tech-item{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px 20px 22px;}
+  .tech-item .role{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--text-mute); display:block; margin-bottom:9px;}
+  .tech-item h3{font-family:var(--mono); font-size:15.5px; font-weight:500; color:var(--accent); margin-bottom:7px; letter-spacing:.005em;}
+  .tech-item p{margin:0; font-size:14.5px; line-height:1.55; color:var(--text-dim);}
+  .tech-subhead{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim); margin:34px 0 -6px;}
+
+  /* roadmap */
+  .roadmap{margin-top:38px;}
+  .phase{position:relative; padding:0 0 34px 30px; border-left:2px solid var(--line);}
+  .phase:last-child{border-left-color:transparent; padding-bottom:4px;}
+  .phase::before{content:""; position:absolute; left:-8px; top:3px; width:13px; height:13px; border-radius:50%; background:var(--bg); border:2px solid var(--accent);}
+  .phase.done::before{background:var(--accent);}
+  .phase-head{display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap;}
+  .phase .pnum{font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent);}
+  .phase h3{font-size:20px; margin-top:3px;}
+  .phase .cost-tag{font-family:var(--mono); font-size:12.5px; color:var(--warm); border:1px solid var(--line-2); padding:5px 12px; border-radius:100px; white-space:nowrap;}
+  .phase.done .cost-tag{color:var(--text-mute);}
+  .phase .pdesc{color:var(--text-dim); margin:9px 0 15px; max-width:66ch; font-size:15.5px;}
+  .caps{display:flex; flex-wrap:wrap; gap:8px;}
+  .cap{font-size:13px; color:#C3D0DA; background:var(--surface-2); border:1px solid var(--line); padding:6px 11px; border-radius:8px;}
+
+  /* oversight ladder, the signature component */
+  .ladder{margin-top:38px; display:flex; flex-direction:column; gap:14px;}
+  .tier{
+    display:grid; grid-template-columns:132px 1fr; gap:24px; align-items:center;
+    background:var(--surface); border:1px solid var(--line);
+    border-left:3px solid var(--tc); border-radius:0 14px 14px 0; padding:22px 24px;
+  }
+  .tier .zoom{font-family:var(--display); font-weight:600;}
+  .tier .zoom .z{font-size:30px; color:var(--text); letter-spacing:-.01em;}
+  .tier .zoom .lbl{display:block; font-family:var(--mono); font-size:11.5px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--text-mute); margin-top:3px;}
+  .tier .cadence{font-family:var(--mono); font-size:13px; color:var(--tc);
+    letter-spacing:.05em; margin-bottom:6px;}
+  .tier .desc{font-size:15.5px; color:var(--text-dim); margin:0;}
+  .tier .desc b{color:var(--text); font-weight:600;}
+  .meter{height:6px; border-radius:100px; background:rgba(255,255,255,.06); margin-top:14px; overflow:hidden;}
+  .meter i{display:block; height:100%; background:var(--tc); border-radius:100px;}
+  .ladder-note{margin-top:20px; font-size:15px; color:var(--text-dim);
+    display:flex; gap:12px; align-items:flex-start;}
+  .ladder-note .k{color:var(--accent); font-family:var(--mono); font-size:12px;
+    letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; padding-top:3px;}
+
+  /* callout */
+  .callout{margin-top:34px; background:linear-gradient(135deg, rgba(217,111,180,.08), rgba(217,111,180,.02));
+    border:1px solid var(--accent-dim); border-radius:16px; padding:30px 32px;}
+  .callout h3{font-size:20px; margin-bottom:10px; color:var(--text);}
+  .callout p{margin:0; color:#CBD6DE; max-width:70ch; font-size:16px;}
+
+  /* diagrams */
+  .diagram-block{margin-top:40px;}
+  .diagram-block:first-of-type{margin-top:34px;}
+  .diagram-cap{display:flex; gap:14px; align-items:baseline; margin-bottom:16px;}
+  .diagram-cap .n{font-family:var(--mono); color:var(--accent); font-size:13px; padding-top:2px;}
+  .diagram-cap h3{font-size:19px; font-weight:600;}
+  .diagram-cap p{margin:4px 0 0; color:var(--text-dim); font-size:15px; max-width:70ch;}
+  .diagram-frame{
+    background:var(--bg-2); border:1px solid var(--line);
+    border-radius:16px; padding:26px 22px;
+  }
+  svg.diagram{width:100%; height:auto; display:block;}
+  .d-zone{fill:rgba(255,255,255,.018); stroke:var(--line-2); stroke-dasharray:5 5; stroke-width:1;}
+  .d-box{fill:var(--surface-2); stroke:var(--line-2); stroke-width:1;}
+  .d-title{fill:var(--text); font-family:var(--body); font-size:15px; font-weight:500;}
+  .d-sub{fill:var(--text-dim); font-family:var(--mono); font-size:12px;}
+  .d-zonelabel{fill:var(--text-mute); font-family:var(--mono); font-size:12px; letter-spacing:.12em;}
+  .d-arrow{stroke:var(--arrow); stroke-width:1.5; fill:none;}
+  .n-in rect{fill:rgba(110,147,180,.14); stroke:var(--cool);} .n-in .d-title{fill:#B4CBE0;}
+  .n-serve rect{fill:rgba(217,111,180,.13); stroke:var(--accent);} .n-serve .d-title{fill:#F2A9D6;}
+  .n-hot rect{fill:rgba(232,115,74,.14); stroke:var(--hot);} .n-hot .d-title{fill:#F2A585;}
+  .n-warm rect{fill:rgba(224,169,60,.14); stroke:var(--warm);} .n-warm .d-title{fill:#ECC677;}
+  .n-cool rect{fill:rgba(110,147,180,.13); stroke:var(--cool);} .n-cool .d-title{fill:#AEC6DC;}
+
+  /* scope */
+  .scope-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:32px;}
+  .scope-col{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px 26px;}
+  .scope-col h3{font-size:16px; font-family:var(--mono); font-weight:500; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--text-dim); margin-bottom:14px;}
+  .scope-col ul{margin:0; padding:0; list-style:none;}
+  .scope-col li{padding:9px 0 9px 26px; position:relative; font-size:15.5px; color:#CBD6DE; border-top:1px solid var(--line);}
+  .scope-col li:first-child{border-top:none;}
+  .scope-col li::before{content:""; position:absolute; left:2px; top:16px; width:9px; height:9px;}
+  .scope-col.done li::before{background:var(--accent); clip-path:polygon(14% 44%,0 65%,45% 100%,100% 20%,82% 6%,43% 68%);}
+  .scope-col.open li::before{border:1.5px solid var(--warm); border-radius:50%; top:15px;}
+
+  footer{padding:44px 0 60px;}
+  footer p{color:var(--text-mute); font-size:14px; font-family:var(--mono); letter-spacing:.03em; margin:0;}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:none;}
+
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px;}
+
+  @media (max-width:860px){
+    .grid,.tech-grid{grid-template-columns:1fr 1fr;}
+    .scope-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:560px){
+    body{font-size:16px;}
+    .grid,.tech-grid{grid-template-columns:1fr;}
+    .tier{grid-template-columns:1fr; gap:12px; border-radius:0 0 14px 14px; border-left-width:3px;}
+    section{padding:56px 0;}
+    .hero-inner{padding:60px 0 50px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important; scroll-behavior:auto !important;}
+    .reveal{opacity:1; transform:none;}
+  }
+  @media print{
+    :root{
+      --bg:#FFFFFF; --bg-2:#F4F7F9;
+      --surface:#F5F8FA; --surface-2:#ECF1F4;
+      --line:#D4DDE3; --line-2:#C3CED6;
+      --text:#14212B; --text-dim:#43535F; --text-mute:#63727E;
+      --accent:#A32B72; --accent-dim:#7A1F55;
+      --hot:#C4552B; --warm:#A97C16; --cool:#4E7597;
+      --arrow:#6B7A86;
+    }
+    *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; transition:none !important; animation:none !important; }
+    html,body{ background:#FFFFFF !important; color:var(--text) !important; }
+    .reveal{ opacity:1 !important; transform:none !important; }
+    .hero{ background:linear-gradient(180deg,#EEF3F6 0%, #FFFFFF 100%) !important; }
+    .tab-bg{ display:none !important; }
+    .lead-copy p,.callout p,.scope-col li{ color:#28323B !important; }
+    .cap{ color:#33414C !important; }
+    .d-title,.n-in .d-title,.n-serve .d-title,.n-hot .d-title,.n-warm .d-title,.n-cool .d-title{ fill:#16222E !important; }
+    .d-zone{ fill:rgba(0,0,0,.02) !important; }
+    @page{ margin:12mm; }
+    section{ padding:22px 0 !important; }
+    .card,.tech-item,.phase,.diagram-block,.callout,.tier,.ladder-note{ break-inside:avoid; page-break-inside:avoid; }
+    .scope-col li{ break-inside:avoid; page-break-inside:avoid; }
+    .scope-col h3{ break-after:avoid; page-break-after:avoid; }
+    h1,h2,h3{ break-after:avoid; page-break-after:avoid; }
+    .diagram{ max-width:100%; height:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="tab-bg" viewBox="0 0 900 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <pattern id="tabpat" width="72" height="44" patternUnits="userSpaceOnUse" patternTransform="scale(1.3)">
+        <path d="M6 14 h18 l5-6 h16 l5 6 h16 v22 h-60 z" fill="none" stroke="#D96FB4" stroke-width="0.6" opacity="0.2"/>
+      </pattern>
+    </defs>
+    <rect width="900" height="520" fill="url(#tabpat)"/>
+  </svg>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">Platform overview</div>
+    <h1 style="margin-top:20px;">The firm's system of record, <span class="accent">born headless</span>.</h1>
+    <p class="lede">A records and matter management platform for the practice of law. Lawyers and paralegals serve themselves; policy decides which actions need a second set of eyes; every consequential act lands in an anchored audit trail that carries no content. No UI, by design: any interface, bot, or integration builds on the same API.</p>
+    <div class="chips">
+      <span class="chip"><span class="dot"></span>Headless API</span>
+      <span class="chip"><span class="dot"></span>Policy-routed oversight</span>
+      <span class="chip"><span class="dot"></span>Anchored audit trail</span>
+      <span class="chip"><span class="dot"></span>Jurisdiction-aware retention</span>
+    </div>
+  </div>
+</header>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">01</span><h2>What this is</h2></div>
+    <div class="lead-copy" style="margin-top:24px;">
+      <p>This is a headless platform that manages the firm's records across every series: contracts, civil litigation, client files for people and for organizations, and whatever the file plan defines next. It rests on a strict separation of five ideas that most systems blur. A <strong>document</strong> is content: bytes, versions, renditions. A <strong>record</strong> is a declaration: a specific document version fixed as evidence. A <strong>filing</strong> is the act of placing a record into a file, and it carries the series classification, so the same record can be litigation material in one file and contract material in another. A <strong>file</strong> is the dossier lawyers open and close. A <strong>matter</strong> is the engagement, with a client, a responsible attorney, and a conflict check.</p>
+      <p>Because the series lives on the filing, <strong>one record can sit in several files under different rules without being copied</strong>. Each filing projects its own disposition date from its own series trigger, and the record's obligation is the latest projection across all of them. Access is the union of the files it sits in, intersected with the record's own classification floor, so cross-filing can never widen who can reach something. A screen on any filing suppresses the record for that person everywhere.</p>
+      <p>Every filing <strong>answers for itself</strong>. Who filed it, when, by what mechanism, at what confidence, against which schema version, under which series. You can answer why a record is in a file from that filing alone, without reconstructing the record's whole history. Filings are superseded or withdrawn, never deleted, and withdrawing one does not retract an obligation it already put in force.</p>
+      <p>Declaration is precise about what it does. It <strong>freezes the bytes and the fact of the declaration</strong>, and nothing else. Metadata is corrected additively, classification changes per filing, privilege is effective-dated because privilege can be waived or lost, renditions are added over time, and retention position recomputes continuously. A later document version becomes a new record with a supersedes link, never an edit to the old one.</p>
+      <p>It is <strong>self-service by default, governed by policy</strong>, under one lifecycle contract. Every stateful resource declares its states, its transitions, and its guards. Every change goes through the same action envelope, and the platform answers what a given caller may legally do next, so no client hardcodes the state machine.</p>
+      <p>And it draws a firm line about truth. A durable <strong>system of record holds current state with full temporal versioning</strong>. The event log is the anchored, append-only account of what happened around it, carrying identifiers, hashes, decisions, and actors, but never content. That is what lets the firm honor a destruction certificate without breaking its own audit trail.</p>
+    </div>
+  </div>
+</section>
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">02</span><h2>What it does</h2></div>
+    <p class="sec-sub">The capability in plain terms, described by what people get rather than how it is built.</p>
+    <div class="grid">
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h6l2-2h10v14H3z"/><path d="M3 11h18"/></svg>
+        <h3>Self-service file lifecycle</h3>
+        <p>Lawyers and paralegals open, close, merge, transfer, and reopen files through one action endpoint, without waiting on a records queue for routine work.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="7" r="3"/><path d="M5 21v-2a7 7 0 0114 0v2"/><path d="M17 4l2 2 4-4"/></svg>
+        <h3>Oversight where it counts</h3>
+        <p>Sensitive actions route to a reviewer automatically: closing a file under hold, merging across matters, reclassifying a series, releasing a hold. The requester can never be the approver.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h7l2 2h7v12H4z"/><path d="M8 12h8M8 16h5"/></svg>
+        <h3>One record, different rules</h3>
+        <p>A record can be litigation material in one file and contract material in another, because the classification rides on the filing. No copies, no reconciling two series into one answer.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4v6c0 4-3.5 7-8 8-4.5-1-8-4-8-8V7z"/><path d="M12 8v8M8 12h8"/></svg>
+        <h3>Cross-filing cannot widen access</h3>
+        <p>Filing a record somewhere less protected does not expose it. Reach is the union of its files, capped by the record's own floor, and any screen suppresses it everywhere.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4"/><path d="M9.5 12.5l2 2 4-4"/></svg>
+        <h3>Drafts protected from day one</h3>
+        <p>Working documents carry the same access control, walls, and privilege designation as declared records. Nothing waits on a filing decision to be confidential.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h4"/></svg>
+        <h3>Every filing answers for itself</h3>
+        <p>Who filed it, when, how, at what confidence, under which series. One filing's record explains why the document is there, without reading anything else.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8"/><path d="M9 17l2 2 4-4"/></svg>
+        <h3>Declaration freezes the bytes</h3>
+        <p>Fixing a record pins one document version and the fact of the declaration. Corrections, reclassification, and later privilege determinations remain possible, with history.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.8 7.8l2.8 7.4M16.2 7.8l-2.8 7.4M8.6 6h6.8"/></svg>
+        <h3>One party graph</h3>
+        <p>People and organizations resolved once, across every matter, with each claim traced to its source. Conflicts checks and ethical walls run against real identities.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/><path d="M8 13l3 3 5-6"/></svg>
+        <h3>Auto-filing with a dial</h3>
+        <p>Classification lands as a scored claim. High confidence files itself; the uncertain tail queues for review. No classifier decision can move a record onto a shorter clock.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3.5 2"/></svg>
+        <h3>Retention that fits the law</h3>
+        <p>Trigger-based rules, not flat durations. Each filing projects its own disposition date, and an unfired trigger holds the record rather than quietly expiring.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 19V9l7-5 7 5v10"/><path d="M9 19v-5h6v5"/><path d="M12 4v3"/></svg>
+        <h3>Obligations only ratchet up</h3>
+        <p>Cross-filing, reclassification, and merging can lengthen how long something must be kept. None can shorten it, and withdrawing a filing leaves its obligation behind.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v5c0 4-3 7-7 8-4-1-7-4-7-8V6z"/><path d="M9 11l2 2 4-4"/></svg>
+        <h3>Holds that keep up</h3>
+        <p>Legal holds are live queries: newly filed records that match join the hold automatically. Nothing under hold can be destroyed, and release is a reviewed act.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/><path d="M8 11h6M11 8v6"/></svg>
+        <h3>Search that respects walls</h3>
+        <p>Every query is trimmed against ethical screens and matter access at the moment it runs. A screened attorney's search simply never sees what it must not.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 3h14v18l-7-4-7 4z"/><path d="M9 10h6"/></svg>
+        <h3>Destruction that really deletes</h3>
+        <p>Content goes; a tombstone stays, with the dates, the authority, and the certificate. Nothing about the audit trail depends on keeping what the firm agreed to destroy.</p>
+      </div>
+      <div class="card">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M4 12h16M4 18h10"/><path d="M15 15l3 3 4-5"/></svg>
+        <h3>An audit others can verify</h3>
+        <p>The event log's digests are anchored to storage the platform cannot rewrite, and the verifier runs outside the platform team. Self-attested audit trails prove nothing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">03</span><h2>How much oversight does an action get?</h2></div>
+    <p class="sec-sub">Oversight is policy-routed, not caller-chosen. A paralegal and a records manager hit the same endpoint; the platform decides whether a second set of eyes is required. What differs by action class is how much review stands between the request and the result.</p>
+
+    <div class="ladder">
+      <div class="tier" style="--tc:var(--accent);">
+        <div class="zoom"><span class="z">Auto</span><span class="lbl">Executes now</span></div>
+        <div>
+          <div class="cadence">POLICY ALLOWS · SYNCHRONOUS · 200</div>
+          <p class="desc">The bulk of daily work: opening a file in a routine series, filing a record, adding a party. The action <b>executes immediately</b>, the event publishes, and nobody waits on anybody.</p>
+          <div class="meter"><i style="width:100%"></i></div>
+        </div>
+      </div>
+      <div class="tier" style="--tc:var(--warm);">
+        <div class="zoom"><span class="z">Review</span><span class="lbl">One approver</span></div>
+        <div>
+          <div class="cadence">POLICY ROUTES · WORKFLOW · 202</div>
+          <p class="desc">Actions with consequences: closing a file, transferring between portfolios, low-confidence auto-filing. The request returns a workflow, lands on a <b>reviewer's worklist</b>, and executes on approval. Requester and approver can never be the same person.</p>
+          <div class="meter"><i style="width:55%"></i></div>
+        </div>
+      </div>
+      <div class="tier" style="--tc:var(--hot);">
+        <div class="zoom"><span class="z">Govern</span><span class="lbl">Role-gated</span></div>
+        <div>
+          <div class="cadence">RESTRICTED · CERTIFIED · 202</div>
+          <p class="desc">The acts the firm answers for: merging files across matters, reclassifying a filing's series, withdrawing a filing, releasing a legal hold, certifying destruction, resolving a disposition method conflict. Reserved to <b>records management or general counsel roles</b>, with the decision, the deciding identity, and the certificate all preserved permanently.</p>
+          <div class="meter"><i style="width:22%"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ladder-note">
+      <span class="k">Note</span>
+      <span>All actions carry idempotency keys, and pending workflows take a lease on the resources they affect, so two people racing to merge the same file into different targets resolve cleanly rather than corrupting state.</span>
+    </div>
+
+    <div class="callout">
+      <h3>Policy decides, not the caller</h3>
+      <p>Lifecycle transitions are requested, not performed: <b>POST /{resource}/{id}/actions</b> with a type of open, close, merge, transfer, reclassify, withdraw, or dispose. The same envelope covers every stateful resource, not just files. Guards evaluate in a fixed order, existence then authorization then state legality then invariants, before the policy engine decides routing. If no oversight is required, it executes synchronously. If review is required, the platform opens a workflow and routes it. Adding a new controlled action later, or tightening review on an existing one, is configuration owned by the records team, not an API redesign owned by engineering. Self-service stays the default; oversight is an overlay.</p>
+    </div>
+  </div>
+</section>
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">04</span><h2>How it works</h2></div>
+    <p class="sec-sub">Six views of the system, each with a plain-language read. The technical reference carries the full detail.</p>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">A</span>
+        <div><h3>Three planes</h3>
+        <p>The control plane holds configuration owned by records managers: the file plan, metadata schemas, vocabularies, retention rules, and walls. It governs the data plane, where the substance lives: the party graph, matters, files, filings, records, and documents. Every change in the data plane emits into the activity plane, where workflows run, worklists queue, and the anchored audit log accumulates. The control plane is what makes the platform configurable by the records team instead of engineers; the activity plane is what makes self-service safe.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 400" role="img" aria-label="Three stacked planes: a control plane of series, schemas, vocabularies, retention and walls governs a data plane of entities, matters, files, filings, records and documents, which emits into an activity plane of workflows, worklists, events, anchors, imports and exports.">
+          <defs><marker id="ar-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <g class="n-warm"><rect class="d-box" x="170" y="40" width="560" height="82" rx="12"/><text class="d-title" x="450" y="66" text-anchor="middle">Control plane</text><text class="d-sub" x="450" y="88" text-anchor="middle">series &#183; schemas &#183; vocabularies &#183; retention &#183; walls</text><text class="d-sub" x="450" y="108" text-anchor="middle">what may exist, who may act, what must be kept</text></g>
+          <line class="d-arrow" x1="450" y1="122" x2="450" y2="152" marker-end="url(#ar-a)"/>
+          <text class="d-sub" x="466" y="143">governs</text>
+          <g class="n-serve"><rect class="d-box" x="170" y="156" width="560" height="82" rx="12"/><text class="d-title" x="450" y="182" text-anchor="middle">Data plane</text><text class="d-sub" x="450" y="204" text-anchor="middle">entities &#183; matters &#183; files &#183; filings &#183; records &#183; documents</text><text class="d-sub" x="450" y="224" text-anchor="middle">the parties, the engagements, the content itself</text></g>
+          <line class="d-arrow" x1="450" y1="238" x2="450" y2="268" marker-end="url(#ar-a)"/>
+          <text class="d-sub" x="466" y="259">emits</text>
+          <g class="n-cool"><rect class="d-box" x="170" y="272" width="560" height="82" rx="12"/><text class="d-title" x="450" y="298" text-anchor="middle">Activity plane</text><text class="d-sub" x="450" y="320" text-anchor="middle">workflows &#183; worklists &#183; events &#183; anchors &#183; imports &#183; exports</text><text class="d-sub" x="450" y="340" text-anchor="middle">where change happens and gets witnessed</text></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">B</span>
+        <div><h3>One lifecycle contract</h3>
+        <p>Every stateful resource in the platform, not just files, declares its states, its legal transitions, and its guards. A request hits the action endpoint with an idempotency key. Guards evaluate in a fixed order: existence, then authorization, then state legality, then invariants, then policy routing. That order is part of the contract, because it decides what a caller learns from a refusal: someone who should not know a resource exists cannot infer its state from an error message. Routine actions execute and return the new state; controlled actions return a workflow. A caller can also ask what it may legally do next, so no client hardcodes the state machine.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 270" role="img" aria-label="An action request on any stateful resource passes through guards in order and a policy gate, which either executes it synchronously or opens a review workflow; both paths publish to the event log.">
+          <defs><marker id="ar-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <g class="n-in"><rect class="d-box" x="30" y="104" width="190" height="62" rx="9"/><text class="d-title" x="125" y="129" text-anchor="middle">Action request</text><text class="d-sub" x="125" y="148" text-anchor="middle">any resource</text></g>
+          <line class="d-arrow" x1="220" y1="135" x2="258" y2="135" marker-end="url(#ar-b)"/>
+          <g class="n-warm"><rect class="d-box" x="260" y="104" width="200" height="62" rx="9"/><text class="d-title" x="360" y="129" text-anchor="middle">Guards, then policy</text><text class="d-sub" x="360" y="148" text-anchor="middle">auth &#183; state &#183; invariants</text></g>
+          <line class="d-arrow" x1="460" y1="118" x2="508" y2="82" marker-end="url(#ar-b)"/>
+          <line class="d-arrow" x1="460" y1="152" x2="508" y2="188" marker-end="url(#ar-b)"/>
+          <g class="n-serve"><rect class="d-box" x="510" y="40" width="180" height="58" rx="9"/><text class="d-title" x="600" y="63" text-anchor="middle">Execute</text><text class="d-sub" x="600" y="82" text-anchor="middle">synchronous &#183; 200</text></g>
+          <g class="n-hot"><rect class="d-box" x="510" y="172" width="180" height="58" rx="9"/><text class="d-title" x="600" y="195" text-anchor="middle">Review workflow</text><text class="d-sub" x="600" y="214" text-anchor="middle">202 &#183; approve or deny</text></g>
+          <line class="d-arrow" x1="690" y1="69" x2="758" y2="118" marker-end="url(#ar-b)"/>
+          <line class="d-arrow" x1="690" y1="201" x2="758" y2="152" marker-end="url(#ar-b)"/>
+          <g class="n-cool"><rect class="d-box" x="722" y="104" width="150" height="62" rx="9"/><text class="d-title" x="797" y="129" text-anchor="middle">Event log</text><text class="d-sub" x="797" y="148" text-anchor="middle">anchored</text></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">C</span>
+        <div><h3>The series rides on the filing</h3>
+        <p>The ontology the whole platform stands on, and the detail that makes the rest of it work. A document is mutable content. Declaring it produces a record: one document version, fixed. A filing places that record into a file and carries the series classification, which is why the same record can be litigation material in one file and contract material in another with no copy and no conflict to reconcile. Files open under matters. Each filing projects its own disposition date from its own series trigger, and each one is independently auditable.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 320" role="img" aria-label="A document is declared as a record; a filing carrying its own series classification places that record into a file, which sits under a matter. A second cross-filing places the same record into a contracts file under a different series.">
+          <defs><marker id="ar-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <g class="n-warm"><rect class="d-box" x="380" y="40" width="140" height="52" rx="9"/><text class="d-title" x="450" y="61" text-anchor="middle">Series</text><text class="d-sub" x="450" y="79" text-anchor="middle">file plan</text></g>
+          <line class="d-arrow" x1="450" y1="92" x2="450" y2="136" marker-end="url(#ar-c)"/>
+          <text class="d-sub" x="466" y="112">classifies</text>
+          <text class="d-sub" x="186" y="132" text-anchor="middle">declared</text>
+          <text class="d-sub" x="536" y="132" text-anchor="middle">into</text>
+          <text class="d-sub" x="711" y="132" text-anchor="middle">under</text>
+          <g class="n-in"><rect class="d-box" x="30" y="140" width="140" height="66" rx="9"/><text class="d-title" x="100" y="167" text-anchor="middle">Document</text><text class="d-sub" x="100" y="187" text-anchor="middle">working copy</text></g>
+          <line class="d-arrow" x1="170" y1="173" x2="203" y2="173" marker-end="url(#ar-c)"/>
+          <g class="n-hot"><rect class="d-box" x="205" y="140" width="140" height="66" rx="9"/><text class="d-title" x="275" y="167" text-anchor="middle">Record</text><text class="d-sub" x="275" y="187" text-anchor="middle">bytes fixed</text></g>
+          <line class="d-arrow" x1="345" y1="173" x2="378" y2="173" marker-end="url(#ar-c)"/>
+          <g class="n-serve"><rect class="d-box" x="380" y="140" width="140" height="66" rx="9"/><text class="d-title" x="450" y="167" text-anchor="middle">Filing</text><text class="d-sub" x="450" y="187" text-anchor="middle">litigation</text></g>
+          <line class="d-arrow" x1="520" y1="173" x2="553" y2="173" marker-end="url(#ar-c)"/>
+          <g class="n-serve"><rect class="d-box" x="555" y="140" width="140" height="66" rx="9"/><text class="d-title" x="625" y="167" text-anchor="middle">File</text><text class="d-sub" x="625" y="187" text-anchor="middle">case dossier</text></g>
+          <line class="d-arrow" x1="695" y1="173" x2="728" y2="173" marker-end="url(#ar-c)"/>
+          <g class="n-cool"><rect class="d-box" x="730" y="140" width="140" height="66" rx="9"/><text class="d-title" x="800" y="167" text-anchor="middle">Matter</text><text class="d-sub" x="800" y="187" text-anchor="middle">client &#183; team</text></g>
+          <line class="d-arrow" x1="275" y1="208" x2="374" y2="248" marker-end="url(#ar-c)"/>
+          <text class="d-sub" x="40" y="256">each filing carries</text>
+          <text class="d-sub" x="40" y="274">its own series</text>
+          <g class="n-serve"><rect class="d-box" x="380" y="232" width="140" height="52" rx="9"/><text class="d-title" x="450" y="253" text-anchor="middle">Filing</text><text class="d-sub" x="450" y="271" text-anchor="middle">contracts</text></g>
+          <line class="d-arrow" x1="520" y1="258" x2="553" y2="258" marker-end="url(#ar-c)"/>
+          <g class="n-serve"><rect class="d-box" x="555" y="232" width="140" height="52" rx="9"/><text class="d-title" x="625" y="253" text-anchor="middle">File</text><text class="d-sub" x="625" y="271" text-anchor="middle">contracts</text></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">D</span>
+        <div><h3>Retention only ratchets up</h3>
+        <p>A platform invariant, not a rule that lives in one place. Each filing projects a disposition date from its own series trigger, and the record's obligation is the latest projection across all of them. Durations are not compared directly, because triggers differ: an event-based trigger that has not fired yet holds the record rather than contributing a number. Cross-filing never accelerates destruction, reclassification applies only to what is filed afterward, and withdrawing a filing leaves its obligation in force. Disposition then requires that every filing has cleared and no hold applies, re-checked inside the transaction that destroys.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 240" role="img" aria-label="Four inputs, each filing's series trigger, cross-filings, reclassification, and active legal holds, converge on a latest-projection-wins rule which then gates disposition eligibility.">
+          <defs><marker id="ar-d" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <g class="n-in"><rect class="d-box" x="40" y="20" width="210" height="44" rx="9"/><text class="d-title" x="145" y="47" text-anchor="middle">Each series trigger</text></g>
+          <g class="n-in"><rect class="d-box" x="40" y="72" width="210" height="44" rx="9"/><text class="d-title" x="145" y="99" text-anchor="middle">Every cross-filing</text></g>
+          <g class="n-in"><rect class="d-box" x="40" y="124" width="210" height="44" rx="9"/><text class="d-title" x="145" y="151" text-anchor="middle">Reclassification</text></g>
+          <g class="n-in"><rect class="d-box" x="40" y="176" width="210" height="44" rx="9"/><text class="d-title" x="145" y="203" text-anchor="middle">Active legal holds</text></g>
+          <line class="d-arrow" x1="250" y1="42" x2="336" y2="100" marker-end="url(#ar-d)"/>
+          <line class="d-arrow" x1="250" y1="94" x2="336" y2="112" marker-end="url(#ar-d)"/>
+          <line class="d-arrow" x1="250" y1="146" x2="336" y2="128" marker-end="url(#ar-d)"/>
+          <line class="d-arrow" x1="250" y1="198" x2="336" y2="140" marker-end="url(#ar-d)"/>
+          <g class="n-hot"><rect class="d-box" x="340" y="76" width="200" height="88" rx="11"/><text class="d-title" x="440" y="104" text-anchor="middle">Latest wins</text><text class="d-sub" x="440" y="126" text-anchor="middle">one per filing</text><text class="d-sub" x="440" y="146" text-anchor="middle">never decreases</text></g>
+          <line class="d-arrow" x1="540" y1="120" x2="628" y2="120" marker-end="url(#ar-d)"/>
+          <g class="n-serve"><rect class="d-box" x="630" y="76" width="230" height="88" rx="11"/><text class="d-title" x="745" y="104" text-anchor="middle">Disposition eligible</text><text class="d-sub" x="745" y="126" text-anchor="middle">every filing cleared</text><text class="d-sub" x="745" y="146" text-anchor="middle">no hold anywhere</text></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">E</span>
+        <div><h3>Where truth lives</h3>
+        <p>A deliberate decision, not a default. A durable system of record holds current state with full temporal versioning, and it is where content lives. The event log is the anchored, append-only account of what happened around it. Events carry identifiers, versions, content hashes, decisions, actors, and reason codes, and never content itself. That constraint is what makes lawful destruction possible: removing the bytes invalidates no event, because no event held them, and the hash left behind proves what was destroyed without retaining it. Projections rebuild from the system of record rather than by replaying the log, so a destroyed record cannot reappear in search. The party graph is the one deliberate exception, where accumulating claims really are the truth and resolved identities are the projection over them.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 290" role="img" aria-label="Actions write to a system of record holding current state, versions, and content; it emits to an anchored event log carrying hashes but never content, and it rebuilds projections for search and reporting. Destruction removes content while the log and a tombstone remain.">
+          <defs><marker id="ar-e" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <g class="n-in"><rect class="d-box" x="30" y="110" width="180" height="60" rx="9"/><text class="d-title" x="120" y="134" text-anchor="middle">Actions</text><text class="d-sub" x="120" y="153" text-anchor="middle">every transition</text></g>
+          <line class="d-arrow" x1="210" y1="140" x2="256" y2="140" marker-end="url(#ar-e)"/>
+          <g class="n-hot"><rect class="d-box" x="258" y="86" width="232" height="108" rx="11"/><text class="d-title" x="374" y="116" text-anchor="middle">System of record</text><text class="d-sub" x="374" y="140" text-anchor="middle">current state</text><text class="d-sub" x="374" y="160" text-anchor="middle">temporal versions</text><text class="d-sub" x="374" y="180" text-anchor="middle">content lives here</text></g>
+          <line class="d-arrow" x1="490" y1="118" x2="616" y2="86" marker-end="url(#ar-e)"/>
+          <line class="d-arrow" x1="490" y1="162" x2="616" y2="196" marker-end="url(#ar-e)"/>
+          <g class="n-cool"><rect class="d-box" x="618" y="42" width="242" height="76" rx="9"/><text class="d-title" x="739" y="68" text-anchor="middle">Event log</text><text class="d-sub" x="739" y="90" text-anchor="middle">hashes, decisions, actors</text><text class="d-sub" x="739" y="108" text-anchor="middle">never content</text></g>
+          <g class="n-serve"><rect class="d-box" x="618" y="170" width="242" height="76" rx="9"/><text class="d-title" x="739" y="196" text-anchor="middle">Projections</text><text class="d-sub" x="739" y="218" text-anchor="middle">search &#183; reports</text><text class="d-sub" x="739" y="236" text-anchor="middle">rebuilt from the record</text></g>
+          <text class="d-sub" x="40" y="238">destruction removes content</text>
+          <text class="d-sub" x="40" y="256">the log and a tombstone remain</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="diagram-block">
+      <div class="diagram-cap">
+        <span class="n">F</span>
+        <div><h3>One party graph, many consumers</h3>
+        <p>Identity is built from claims, not overwrites. Every source, intake forms, corporate registries, migrated legacy systems, the auto-classifier, contributes assertions with provenance and confidence. Entity resolution fuses assertions into resolved identities, and because the claims are preserved, a merge can be reversed in the graph. Reversing one is a correction workflow, not a button: the platform inventories every matter, wall, filing, and conflicts clearance that referenced the merged identity, marks affected clearances provisionally invalid, and holds the separation open until a human has resolved each reference.</p></div>
+      </div>
+      <div class="diagram-frame">
+        <svg class="diagram" viewBox="0 0 900 250" role="img" aria-label="Sources contribute assertions with provenance, which resolve into entities; conflicts checks, matter party roles, and ethical walls all consume the same resolved graph, and reversing a merge forces every reference to be re-decided.">
+          <defs><marker id="ar-f" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5C6E7B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <g class="n-in"><rect class="d-box" x="40" y="92" width="160" height="66" rx="9"/><text class="d-title" x="120" y="119" text-anchor="middle">Sources</text><text class="d-sub" x="120" y="139" text-anchor="middle">intake &#183; registries</text></g>
+          <line class="d-arrow" x1="200" y1="125" x2="238" y2="125" marker-end="url(#ar-f)"/>
+          <g class="n-warm"><rect class="d-box" x="240" y="92" width="180" height="66" rx="9"/><text class="d-title" x="330" y="119" text-anchor="middle">Assertions</text><text class="d-sub" x="330" y="139" text-anchor="middle">claims &#183; provenance</text></g>
+          <line class="d-arrow" x1="420" y1="125" x2="458" y2="125" marker-end="url(#ar-f)"/>
+          <g class="n-serve"><rect class="d-box" x="460" y="92" width="170" height="66" rx="9"/><text class="d-title" x="545" y="119" text-anchor="middle">Entities</text><text class="d-sub" x="545" y="139" text-anchor="middle">resolved &#183; reversible</text></g>
+          <line class="d-arrow" x1="630" y1="108" x2="678" y2="63" marker-end="url(#ar-f)"/>
+          <line class="d-arrow" x1="630" y1="125" x2="678" y2="125" marker-end="url(#ar-f)"/>
+          <line class="d-arrow" x1="630" y1="142" x2="678" y2="187" marker-end="url(#ar-f)"/>
+          <g class="n-cool"><rect class="d-box" x="680" y="36" width="180" height="52" rx="8"/><text class="d-title" x="770" y="57" text-anchor="middle">Conflicts checks</text><text class="d-sub" x="770" y="75" text-anchor="middle">re-run on reversal</text></g>
+          <g class="n-cool"><rect class="d-box" x="680" y="99" width="180" height="52" rx="8"/><text class="d-title" x="770" y="120" text-anchor="middle">Matter roles</text><text class="d-sub" x="770" y="138" text-anchor="middle">client &#183; adverse</text></g>
+          <g class="n-hot"><rect class="d-box" x="680" y="162" width="180" height="52" rx="8"/><text class="d-title" x="770" y="183" text-anchor="middle">Walls &amp; access</text><text class="d-sub" x="770" y="201" text-anchor="middle">screens trim search</text></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="callout">
+      <h3>The audit log is tamper-evident, not tamper-proof</h3>
+      <p>A hash chain the platform writes and the platform validates protects against nothing an attacker with database access cares about, because they can rewrite the chain. So the chain is only the inner layer. At a fixed interval a separate principal computes a Merkle root over the events since the last anchor and writes it to object-lock storage the application runtime holds no credentials for. A verifier that reads the log and the anchor store runs <b>outside the platform team</b>, ideally by internal audit, because a log only the platform can validate proves nothing about the platform. Certificates of destruction additionally carry an external RFC 3161 timestamp, which turns an internal claim into something with standing. Between anchors there is a window, and the anchoring interval is a stated number, not a promise of continuity.</p>
+    </div>
+  </div>
+</section>
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">05</span><h2>The API surface</h2></div>
+    <p class="sec-sub">Resource families grouped by plane. Everything below is REST plus a webhook-subscribable event stream; there is no other way in, which is the point.</p>
+    <div class="tech-subhead">Control plane</div>
+    <div class="tech-grid">
+      <div class="tech-item"><span class="role">File plan</span><h3>/series</h3><p>The record series taxonomy. A series is applied by a filing rather than held on the record, so the same record can be classified differently in different files.</p></div>
+      <div class="tech-item"><span class="role">Metadata profiles</span><h3>/schemas</h3><p>Versioned required and optional fields per series. Records validate at declaration time against the schema version in force, and reclassification never invalidates them retroactively.</p></div>
+      <div class="tech-item"><span class="role">Reference data</span><h3>/vocabularies &#183; /terms</h3><p>Controlled terms with effective dates, deprecation, and superseded-by chains. Crosswalks map terms to external systems. Never hard-deleted once referenced.</p></div>
+      <div class="tech-item"><span class="role">Retention rules</span><h3>/retention-schedules</h3><p>Trigger, duration, and disposition method, jurisdiction-aware. Each filing projects its own date; an unfired trigger holds rather than expires; conflicting methods escalate instead of resolving silently.</p></div>
+      <div class="tech-item"><span class="role">Ethical screens</span><h3>/walls &#183; /policies</h3><p>Queryable, auditable screens and the routing rules that decide which actions need review. Walls override team membership everywhere.</p></div>
+      <div class="tech-item"><span class="role">Numbering</span><h3>/numbering-schemes</h3><p>Client-matter-file number formats as pluggable configuration, with the scheme id stored alongside every generated number for acquisition-era coexistence.</p></div>
+    </div>
+    <div class="tech-subhead">Data plane</div>
+    <div class="tech-grid">
+      <div class="tech-item"><span class="role">Party graph</span><h3>/entities &#183; /identifiers</h3><p>People, organizations, courts, and agencies as resolved identities. Losing ids from merges persist forever as redirects.</p></div>
+      <div class="tech-item"><span class="role">Claims</span><h3>/assertions &#183; /sources</h3><p>Every fact about an entity as a sourced, scored claim. This subsystem is genuinely claims-first: resolved entities are a projection over accumulating assertions.</p></div>
+      <div class="tech-item"><span class="role">Connections</span><h3>/relationships</h3><p>Typed links across the graph: employment, ownership, representation, place-in-hierarchy. The substrate conflicts checks traverse.</p></div>
+      <div class="tech-item"><span class="role">Engagements</span><h3>/matters</h3><p>The engagement with client, conflict status, and role-bearing party links. Matter teams at /matters/{id}/team carry delegated authority.</p></div>
+      <div class="tech-item"><span class="role">Engagement facts</span><h3>/matters/{id}/events</h3><p>What happened on the engagement, including court filings, hearings, and service dates. Distinct from internal filings, which place records into files.</p></div>
+      <div class="tech-item"><span class="role">Content</span><h3>/documents</h3><p>Working, declared, or transient. Mutable content with versions and renditions, content-addressed and fixity-checked. Access, walls, and privilege attach here, not at declaration.</p></div>
+      <div class="tech-item"><span class="role">Declarations</span><h3>/records</h3><p>Fixes one document version by hash, plus the fact of the declaration. Metadata stays correctable, privilege stays effective-dated, renditions stay additive, and a later version becomes a successor record.</p></div>
+      <div class="tech-item"><span class="role">Placement</span><h3>/filings</h3><p>Carries the series, position, filer, mechanism, confidence, and schema version. Exactly one filing per record is primary. Superseded or withdrawn, never deleted, and withdrawal leaves a residual obligation.</p></div>
+      <div class="tech-item"><span class="role">Placement audit</span><h3>/filings/{id}/events</h3><p>Each filing's own stream, so why a record sits in a file is answerable from that filing alone, without reconstructing the record's whole history.</p></div>
+      <div class="tech-item"><span class="role">Dossiers</span><h3>/files</h3><p>The aggregation containers lawyers open and close. Belong to a matter. GET returns current state only, never a segment the caller has to reason about.</p></div>
+      <div class="tech-item"><span class="role">History</span><h3>/files/{id}/lifecycle</h3><p>The ordered open and close segments with their reasons and retention behavior. An audit structure, deliberately not a query interface for reporting.</p></div>
+      <div class="tech-item"><span class="role">Preservation</span><h3>/holds</h3><p>Legal holds as continuously evaluated scope queries with tracked notifications, reviewed release, and conflict reporting across overlapping holds.</p></div>
+      <div class="tech-item"><span class="role">Destruction</span><h3>/dispositions</h3><p>Runs only when every filing has cleared and no hold applies, re-checked inside the destroying transaction. Content goes; a tombstone and a timestamped certificate persist.</p></div>
+    </div>
+    <div class="tech-subhead">Activity plane</div>
+    <div class="tech-grid">
+      <div class="tech-item"><span class="role">Transitions</span><h3>/{resource}/{id}/actions</h3><p>One envelope for every stateful resource. GET returns the transitions this caller may legally take now and whether each executes or routes to review, so no client hardcodes the state machine.</p></div>
+      <div class="tech-item"><span class="role">Oversight</span><h3>/workflows</h3><p>Pending decisions with separation of duties enforced in the engine and leases held on affected resources until resolution.</p></div>
+      <div class="tech-item"><span class="role">Repair</span><h3>/corrections</h3><p>Long-running workflows for reversing a merge or a mistaken reclassification: impact inventory first, every downstream reference resolved by a human, commit only when none remain.</p></div>
+      <div class="tech-item"><span class="role">Queues</span><h3>/worklists</h3><p>Pending approvals, disposition reviews, classification queues, expiring holds, unresolved corrections. What any UI or bot renders as an inbox.</p></div>
+      <div class="tech-item"><span class="role">Audit</span><h3>/events</h3><p>The append-only account of what happened around the system of record. Identifiers, versions, hashes, decisions, actors, reason codes. Never content, which is what makes lawful destruction possible.</p></div>
+      <div class="tech-item"><span class="role">Attestation</span><h3>/anchors</h3><p>Periodic Merkle roots over the event log, written by a separate principal to storage the application cannot rewrite, with an independently runnable verifier.</p></div>
+      <div class="tech-item"><span class="role">Ingest</span><h3>/imports</h3><p>Migration and bulk ingest with staging, schema validation, quarantine, and provenance stamping. Legacy metadata arrives as sourced assertions.</p></div>
+      <div class="tech-item"><span class="role">Production</span><h3>/exports</h3><p>Discovery load files, client transfer packages, regulator productions. Bates numbering, privilege enforcement, and a log of what left and under what authority.</p></div>
+      <div class="tech-item"><span class="role">Findability</span><h3>/search &#183; /reports</h3><p>Search is security-trimmed per result at query time. Both rebuild from the system of record, so destroyed content cannot reappear in an index.</p></div>
+    </div>
+  </div>
+</section>
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">06</span><h2>Roadmap</h2></div>
+    <p class="sec-sub">Build order grouped by dependency rather than appeal. The ontology and file plan come first because every other capability classifies against them; the automation comes after the workflow machinery it rides on.</p>
+    <div class="roadmap">
+
+      <div class="phase done">
+        <div class="phase-head">
+          <div><div class="pnum">Now &#183; delivered design</div><h3>Platform architecture</h3></div>
+          <span class="cost-tag">In design</span>
+        </div>
+        <p class="pdesc">The ontology, the truth model, the API surface, and the oversight model are settled. The five-concept ontology with the series on the filing; declaration that freezes bytes and nothing else; a system of record with a content-free audit log around it; the ratchet invariant; and one lifecycle contract across every resource are the load-bearing decisions everything below assumes.</p>
+        <div class="caps"><span class="cap">Series on the filing</span><span class="cap">Declaration semantics</span><span class="cap">System of record + audit log</span><span class="cap">Retention ratchet invariant</span><span class="cap">One lifecycle contract</span></div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head">
+          <div><div class="pnum">Phase 1</div><h3>Ontology &amp; file plan</h3></div>
+          <span class="cost-tag">Foundation</span>
+        </div>
+        <p class="pdesc">The substrate everything else rides on: series, versioned schemas, and vocabularies in the control plane; matters, files, filings, records, and documents in the data plane; the system of record with temporal versioning, and the content-free anchored event log around it. Document states, per-filing series, primary and cross-filings, each filing's own audit stream, and current-state projections all land here, because retrofitting either the truth model or the audit spine is not a real option.</p>
+        <div class="caps"><span class="cap">Series &amp; schemas</span><span class="cap">Working, declared, transient</span><span class="cap">Filings with their own series</span><span class="cap">Per-filing audit streams</span><span class="cap">Temporal system of record</span><span class="cap">Anchored event log</span></div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head">
+          <div><div class="pnum">Phase 2</div><h3>Actions, oversight &amp; corrections</h3></div>
+          <span class="cost-tag">Needs P1</span>
+        </div>
+        <p class="pdesc">The lifecycle contract made real across every resource: state and transition tables, the fixed guard order, centrally checked invariants, discoverable transitions, review workflows with separation of duties, resource leases, and worklists. Merge, reclassification, filing withdrawal, and the correction workflows that reverse them ship together here, because a firm that can merge but cannot repair accumulates unfixable mistakes in the gap.</p>
+        <div class="caps"><span class="cap">Transition tables</span><span class="cap">Fixed guard order</span><span class="cap">Central invariants</span><span class="cap">Discoverable actions</span><span class="cap">Merge &amp; reclassify</span><span class="cap">Correction workflows</span></div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head">
+          <div><div class="pnum">Phase 3</div><h3>Party graph &amp; conflicts</h3></div>
+          <span class="cost-tag">Needs P2 for repair</span>
+        </div>
+        <p class="pdesc">Claims-based entity resolution: entities, identifiers, assertions with source provenance, relationships, and entity merge. This is the one subsystem where accumulating claims genuinely are the truth and resolved identities are the projection. Conflicts checks run at matter open, and ethical walls become queryable resources composed with matter teams. Entity merge cannot ship ahead of the correction workflow it depends on.</p>
+        <div class="caps"><span class="cap">Claims as truth</span><span class="cap">Entity resolution</span><span class="cap">Conflicts at open</span><span class="cap">Walls &amp; matter teams</span><span class="cap">Merge reversal</span></div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head">
+          <div><div class="pnum">Phase 4</div><h3>Retention, holds &amp; disposition</h3></div>
+          <span class="cost-tag">Needs P1 + P2</span>
+        </div>
+        <p class="pdesc">The governance payload: the retention rule expression model with jurisdiction inputs, per-filing date projection with the latest winning, escalation when disposition methods conflict, continuously evaluated holds, and the full disposition chain through certified destruction with an external timestamp and a surviving tombstone. This is the phase that turns the platform from a filing system into a defensible records program.</p>
+        <div class="caps"><span class="cap">Retention expressions</span><span class="cap">Per-filing projection</span><span class="cap">Method conflict escalation</span><span class="cap">Live hold scoping</span><span class="cap">Tombstones &amp; certificates</span></div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head">
+          <div><div class="pnum">Phase 5</div><h3>Auto-filing</h3></div>
+          <span class="cost-tag">Needs P2 + P4</span>
+        </div>
+        <p class="pdesc">Classification as scored assertions on the filing: above a per-series threshold the record files itself and the event publishes; below it, the same workflow engine queues it for review. Thresholds reflect the asymmetry of misfiling, and the ratchet invariant means no classifier decision, at any confidence, can place a record onto a shorter clock. Model and threshold versions are control-plane resources, so a decision can be read back against the version that made it.</p>
+        <div class="caps"><span class="cap">Scored classification</span><span class="cap">Per-series thresholds</span><span class="cap">Never shortens retention</span><span class="cap">Versioned models</span></div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head">
+          <div><div class="pnum">Phase 6</div><h3>Import &amp; export</h3></div>
+          <span class="cost-tag">Needs P1 &#183; scales with P4</span>
+        </div>
+        <p class="pdesc">Migration as a product feature: staged batch imports with validation, quarantine, and provenance stamping, so decades of legacy records arrive as sourced assertions rather than laundered facts. On the way out, discovery productions, client file transfers, and regulator packages with Bates numbering and privilege enforcement. A migration spike against a real corpus sample belongs in Phase 1, well ahead of this, to test the ontology before it hardens.</p>
+        <div class="caps"><span class="cap">Staged migration</span><span class="cap">Provenance stamping</span><span class="cap">Discovery productions</span><span class="cap">Client transfers</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section class="reveal">
+  <div class="wrap">
+    <div class="sec-head"><span class="section-num">07</span><h2>Decided, and still open</h2></div>
+    <p class="sec-sub">The commitments the design makes, and the questions the next sessions need to close. This is a design direction that has survived two adversarial reviews, not a specification: treat it as largely settled in shape, pending validation against a real corpus and a named first consumer for the API.</p>
+    <div class="scope-grid">
+      <div class="scope-col done">
+        <h3>Locked in</h3>
+        <ul>
+          <li>Document, record, filing, file, and matter are five distinct resources, and the series classification lives on the filing rather than the record</li>
+          <li>One record, many filings: exactly one is primary, each projects its own disposition date, and the latest projection governs</li>
+          <li>Access is the union of a record's files intersected with its own classification floor, so cross-filing can never widen reach</li>
+          <li>Every filing is independently auditable and answers on its own why a record sits in a file</li>
+          <li>Filings are superseded or withdrawn, never deleted, and withdrawal leaves a residual obligation in force</li>
+          <li>Declaration freezes the bytes of one document version and the fact of the declaration; metadata, classification, and privilege stay versioned</li>
+          <li>A later document version becomes a successor record with a supersedes link, never an edit to the original</li>
+          <li>Retention obligations only ratchet up, and an unfired trigger holds a record rather than quietly expiring</li>
+          <li>Conflicting disposition methods escalate to a records manager; only permanent retention wins automatically</li>
+          <li>One lifecycle contract across every stateful resource, with a fixed guard order and transitions the platform will enumerate on request</li>
+          <li>A temporal system of record holds truth; the event log is the anchored account around it and carries no content</li>
+          <li>Destruction removes content and leaves a tombstone; projections rebuild from the record, not by replaying the log</li>
+          <li>The party graph is the deliberate exception, where accumulating claims are the truth and entities are the projection</li>
+        </ul>
+      </div>
+      <div class="scope-col open">
+        <h3>Open questions</h3>
+        <ul>
+          <li>The retention rule expression language: how rich, how jurisdictional, and who authors it</li>
+          <li>Whether the party graph is directly readable or conflicts runs as a privileged service returning a decision rather than the graph</li>
+          <li>What destruction means against backups, replicas, and delivered exports, and whether crypto-shredding is required for the certificates to be true</li>
+          <li>How long tombstones live, and whether metadata retention is set per series or firm-wide</li>
+          <li>Precedence beyond permanent retention when two series prescribe different disposition methods, if any is safe to automate</li>
+          <li>The anchoring interval, and what exposure the window between anchors represents</li>
+          <li>Aging policy for undeclared documents on closed matters: bulk declaration under a catch-all series, or purge</li>
+          <li>How matter teams, firm roles, and walls compose into one authorization decision, and what sets a record's classification floor</li>
+          <li>Who designates a filing as primary, and what happens when the primary file closes while a cross-filing stays open</li>
+          <li>The event schema catalog and versioning policy for the stream integrators build on</li>
+          <li>Storage tiering and WORM guarantees for declared records in regulated-client work</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<footer>
+  <div class="wrap">
+    <p>Platform overview &#183; headless legal records &amp; matter management &#183; REST + event stream &#183; revision C &#183; post-review &#183; design reference, not a commitment</p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){ els.forEach(function(e){e.classList.add('in');}); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, {threshold:0.12});
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+</body>
+</html>
