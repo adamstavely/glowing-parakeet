@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Application Silos to a Common Service Layer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink-0:#0B1120;
+    --ink-1:#121B30;
+    --ink-2:#1A2540;
+    --line:#243252;
+    --line-soft:#1C2843;
+    --text:#E7ECF6;
+    --text-dim:#9AA6BF;
+    --text-faint:#66738F;
+    --accent:#5B9DFF;
+    --accent-soft:rgba(91,157,255,.12);
+    --amber:#D9A650;
+    --amber-soft:rgba(217,166,80,.10);
+    --display:'Barlow Semi Condensed',sans-serif;
+    --body:'Source Serif 4',serif;
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{background:var(--ink-0);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+
+  /* Document control banner */
+  .banner{background:var(--ink-1);border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--text-dim);text-align:center;padding:9px 16px;text-transform:uppercase}
+  .banner b{color:var(--accent);font-weight:600}
+
+  /* Header */
+  header.doc{max-width:1180px;margin:0 auto;padding:64px 32px 48px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,5vw,58px);line-height:1.05;text-transform:uppercase;letter-spacing:.01em;max-width:900px}
+  .subtitle{font-family:var(--display);font-weight:500;font-size:clamp(18px,2.4vw,24px);color:var(--text-dim);margin-top:14px;letter-spacing:.02em}
+  .purpose{max-width:820px;margin-top:28px;color:var(--text-dim);font-size:16.5px}
+  .purpose strong{color:var(--text)}
+  .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:36px}
+  .meta div{background:var(--ink-1);padding:14px 18px}
+  .meta .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);margin-bottom:5px}
+  .meta .v{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.02em}
+
+  /* Layout */
+  .layout{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:230px 1fr;gap:56px;padding:0 32px 96px}
+  nav.register{position:sticky;top:0;align-self:start;padding-top:48px;height:100vh;overflow-y:auto}
+  nav.register .nav-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-faint);margin-bottom:16px}
+  nav.register a{display:flex;gap:12px;align-items:baseline;padding:8px 0;color:var(--text-dim);text-decoration:none;font-family:var(--display);font-weight:500;font-size:14px;letter-spacing:.03em;border-bottom:1px solid var(--line-soft);transition:color .15s}
+  nav.register a:hover,nav.register a:focus-visible{color:var(--text)}
+  nav.register a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  nav.register a .n{font-family:var(--mono);font-size:11px;color:var(--accent);min-width:26px}
+  main{padding-top:48px;min-width:0}
+
+  /* Sections */
+  section{margin-bottom:72px;scroll-margin-top:32px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:22px;border-bottom:1px solid var(--line);padding-bottom:12px}
+  .sec-head .num{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:600}
+  h2{font-family:var(--display);font-weight:700;font-size:clamp(24px,3vw,32px);text-transform:uppercase;letter-spacing:.02em;line-height:1.15}
+  h3{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:.02em;margin:30px 0 10px;color:var(--text)}
+  p{margin-bottom:16px;max-width:74ch}
+  p strong{color:var(--text);font-weight:600}
+  em{color:var(--text-dim)}
+  section > p:last-child{margin-bottom:0}
+
+  ul.doc-list{list-style:none;margin:20px 0}
+  ul.doc-list li{padding:14px 0 14px 26px;border-bottom:1px solid var(--line-soft);position:relative;max-width:76ch}
+  ul.doc-list li::before{content:"";position:absolute;left:0;top:24px;width:10px;height:2px;background:var(--accent)}
+  ul.doc-list li strong{color:var(--text)}
+
+  /* Callouts */
+  .callout{border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--ink-1);padding:26px 30px;margin:28px 0}
+  .callout .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .callout .big{font-family:var(--display);font-weight:600;font-size:clamp(19px,2.6vw,25px);line-height:1.35;letter-spacing:.01em}
+  .callout.rule{border-left-color:var(--amber)}
+  .callout.rule .label{color:var(--amber)}
+
+  /* Tables */
+  .tbl-wrap{overflow-x:auto;margin:26px 0;border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.55;min-width:640px}
+  thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);text-align:left;padding:12px 18px;background:var(--ink-2);border-bottom:1px solid var(--line);font-weight:500}
+  tbody td{padding:15px 18px;border-bottom:1px solid var(--line-soft);vertical-align:top;background:var(--ink-1)}
+  tbody tr:last-child td{border-bottom:none}
+  td.rowhead{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.02em;color:var(--text);white-space:nowrap}
+  th.today,td.today{color:var(--text-dim)}
+  thead th.today{color:var(--amber)}
+  thead th.future{color:var(--accent)}
+  td.future{color:var(--text)}
+
+  /* End-state + why blocks */
+  .lede{font-size:18.5px;color:var(--text)}
+
+  footer{max-width:1180px;margin:0 auto;padding:32px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--text-faint);line-height:1.8}
+
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr;gap:0}
+    nav.register{position:static;height:auto;padding-top:32px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:8px}
+    nav.register a{border-bottom:none;padding:5px 0}
+    header.doc{padding:48px 20px 36px}
+    .layout{padding:0 20px 72px}
+    main{padding-top:36px}
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">DRAFT <b>//</b> FOR INTERNAL REVIEW <b>//</b> VERSION 0.2 <b>//</b> NOT SETTLED POLICY</div>
+
+<header class="doc">
+  <div class="eyebrow">SDO Capability Platform Strategy</div>
+  <h1>From Application Silos to a Common Service Layer</h1>
+  <div class="subtitle">A capability platform strategy for common enterprise services</div>
+  <p class="purpose"><strong>Purpose:</strong> Make the case for a strategic shift in how the SDO builds software: from every application team constructing its own service layer to a common enterprise service layer delivered by capability platforms and consumed by all applications. Define what changes, why it must change, what the end state looks like, and how we get there.</p>
+  <div class="meta">
+    <div><div class="k">Owning authority</div><div class="v">SDO Technical Director</div></div>
+    <div><div class="k">Status</div><div class="v">Draft for internal review</div></div>
+    <div><div class="k">Version</div><div class="v">0.2</div></div>
+    <div><div class="k">Date</div><div class="v">[DD Month YYYY]</div></div>
+  </div>
+</header>
+
+<div class="layout">
+<nav class="register" aria-label="Section register">
+  <div class="nav-title">Section Register</div>
+  <a href="#s1"><span class="n">1.0</span>Where we are today</a>
+  <a href="#s2"><span class="n">2.0</span>The strategic shift</a>
+  <a href="#s3"><span class="n">3.0</span>Why we must make this shift</a>
+  <a href="#s4"><span class="n">4.0</span>The substrate for agentic work</a>
+  <a href="#s5"><span class="n">5.0</span>What the end state looks like</a>
+  <a href="#s6"><span class="n">6.0</span>The productization standard</a>
+  <a href="#s7"><span class="n">7.0</span>How we get there</a>
+  <a href="#s8"><span class="n">8.0</span>How we will know it is working</a>
+  <a href="#s9"><span class="n">9.0</span>Leadership decisions</a>
+</nav>
+
+<main>
+
+<section id="s1">
+  <div class="sec-head"><span class="num">1.0</span><h2>Where we are today</h2></div>
+  <p class="lede">Every application we build today carries its own service layer. When a team needs identity, storage, search, document processing, translation, or task management, the default answer is to build it, wrap it, or integrate it locally, inside the application, on the application's timeline, to the application's standard.</p>
+  <p>This is not because teams are undisciplined. It is the rational response to the environment they operate in. There is no catalog to shop. Capabilities that do exist elsewhere are not adoptable without a negotiation: find the owning team, get a meeting, get credentials, reverse-engineer an undocumented interface, and accept a dependency with no SLO, no deprecation policy, and no support channel. Faced with that, a team with a delivery date builds their own. Every time. And each time they do, they make the same rational choice easier for the next team, because the enterprise has one more incompatible local implementation and still no common service.</p>
+  <p>The result is a structural condition, not a series of isolated decisions:</p>
+  <ul class="doc-list">
+    <li><strong>We pay for the same capability many times.</strong> Identity handling, storage access, document parsing, and pipeline plumbing exist in near-every application, implemented differently in each. With [N] applications each carrying [M] common capabilities, we fund on the order of N times M builds where the enterprise needs M products.</li>
+    <li><strong>Every new application starts from zero.</strong> Nothing built before it was built to be consumed, so nothing accelerates it. Application timelines are dominated not by mission logic but by rebuilding plumbing that already exists somewhere we cannot reach.</li>
+    <li><strong>Quick-reaction is structurally impossible.</strong> A quick-reaction application is, by definition, assembled from things that already work. In the current state there is nothing to assemble from, so "quick-reaction" means a compressed version of the same ground-up build.</li>
+    <li><strong>Our vendors deliver demos that pass acceptance.</strong> An OTA can deliver a service that functions in a demonstration and satisfies every technical requirement, while no application team can adopt it without a month of integration. We accept the delivery and inherit the integration cost, per consumer, forever.</li>
+    <li><strong>Divergence compounds into risk.</strong> Five identity implementations means five places to get classification handling wrong, five audit surfaces, five patch cycles. In our mission space, duplicated plumbing is not just waste. It is attack surface and compliance exposure multiplied by the number of copies.</li>
+  </ul>
+  <p>None of this is fixed by building more services. We have built services before. They were not adopted, because functioning and being consumable are different properties, and we have only ever required the first.</p>
+</section>
+
+<section id="s2">
+  <div class="sec-head"><span class="num">2.0</span><h2>The strategic shift</h2></div>
+  <p class="lede">The shift is from <strong>applications that own their capabilities</strong> to <strong>applications that assemble from capabilities the enterprise owns</strong>.</p>
+  <p>That sentence implies more than an architecture. It is a change in what we build, what we buy, how we accept vendor deliveries, how teams are measured, and where engineering investment compounds. Concretely, five things invert:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th></th><th class="today">Today</th><th class="future">Under this strategy</th></tr></thead>
+      <tbody>
+        <tr><td class="rowhead">Unit of investment</td><td class="today">The application. Capabilities are a byproduct, trapped inside whichever app built them</td><td class="future">The capability platform. Applications are thin assemblies of mission logic over shared services</td></tr>
+        <tr><td class="rowhead">Default behavior</td><td class="today">Build it locally. Reuse is the exception requiring effort</td><td class="future">Consume from the catalog. Building locally is the exception requiring justification</td></tr>
+        <tr><td class="rowhead">Definition of done</td><td class="today">The service functions</td><td class="future">The service is a product: a stranger can adopt it in production without a meeting</td></tr>
+        <tr><td class="rowhead">Integration model</td><td class="today">Per-consumer negotiation. Every adoption is a meeting, a ticket chain, and a bespoke integration project</td><td class="future">Self-service. Contract, credentials, quickstart, and reference client are the product</td></tr>
+        <tr><td class="rowhead">What compounds</td><td class="today">Nothing. Each application's investment dies with the application</td><td class="future">Every productized service makes the next application cheaper. The platform layer appreciates</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The heart of the shift is the third row. Today we treat a working capability as a finished capability. Under this strategy, a capability that works but cannot be adopted without the owning team's involvement is unfinished, no matter how well it functions. <strong>Reusable is a property we will now require, define, measure, and enforce, not a property we hope emerges.</strong></p>
+</section>
+
+<section id="s3">
+  <div class="sec-head"><span class="num">3.0</span><h2>Why we must make this shift</h2></div>
+  <p><strong>The math does not work any other way.</strong> Application demand is growing faster than the engineering base. We cannot hire our way to N times M. The only way a fixed-size organization delivers a growing application portfolio is if each application costs less than the last, and that happens only when applications share a service layer instead of each rebuilding it. Platform leverage is not an efficiency initiative. It is the only scaling model available to us.</p>
+  <p><strong>Quick-reaction is now a mission requirement, not an aspiration.</strong> The demand signal we receive is increasingly for applications in weeks, not quarters. That timeline is only achievable by assembly. A common service layer is the precondition for every quick-reaction commitment we want to make.</p>
+  <p><strong>We are at a structural window.</strong> The platform OTAs [AIAS, LPS, and the Foundation platform to follow] are being structured now. Acceptance requirements written today decide whether vendors deliver products or components for the life of those agreements. This leverage exists exactly once per OTA, at drafting time. Retrofitting productization into a signed agreement means paying for it twice.</p>
+  <p><strong>AI-assisted development raises the stakes in both directions.</strong> Assisted teams generate application code faster than ever, which means they generate duplicated service layers faster than ever if the default does not change. The same tools make catalog-based assembly dramatically faster when there is a catalog worth assembling from. AI acceleration amplifies whichever default we set. We should set the right one.</p>
+  <p><strong>The security and governance case is independent of the economics.</strong> One classification-propagation service, one export boundary, one audit spine is a governable enterprise. Fifteen local variants is not. Even if the duplication cost were free, the risk concentration argument alone would justify the shift.</p>
+</section>
+
+<section id="s4">
+  <div class="sec-head"><span class="num">4.0</span><h2>Capability platforms are the substrate agentic work runs on</h2></div>
+  <p class="lede">There is a second consumer of the service layer arriving now, and it raises the stakes on everything above: AI agents.</p>
+  <p>An agentic workflow is a system that decomposes a task, selects capabilities, invokes them, evaluates results, and iterates, at machine speed, without a human negotiating each step. Everything we are standing up under AIAS, the capability registry, the MCP gateway, agent orchestration, assurance and evaluation, presumes that agents have capabilities worth invoking. The common service layer is that substrate. Without it, the agent fabric is an engine with nothing to drive.</p>
+  <h3>An agent is the ultimate stranger</h3>
+  <p>The adoption test asks whether a team that has never contacted the owning team can adopt a service without a meeting. An agent is that consumer taken to its logical limit. It cannot attend a meeting, file a ticket to a person, ask a colleague what the undocumented field means, or absorb tribal knowledge over coffee. It can only consume what is explicit: a machine-readable contract, self-service credentials under a governed authorization model, documented errors, and a discoverable registry entry. A service that fails the adoption test for humans is simply invisible to agents. The standard we wrote for human strangers is the minimum bar for machine consumers, which means every dollar spent productizing is simultaneously a dollar spent on agent readiness. They are not two initiatives.</p>
+  <h3>The productization standard is, requirement by requirement, the agent-consumability standard</h3>
+  <p>This is not a loose analogy. Each property maps directly:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Productization requirement</th><th class="future">What it means for an agent</th></tr></thead>
+      <tbody>
+        <tr><td class="rowhead">Machine-readable contract<br>(OpenAPI, protobuf)</td><td class="future">The contract is the tool definition. It is what gets registered, surfaced through the MCP gateway, and reasoned over during planning</td></tr>
+        <tr><td class="rowhead">Documented idempotency and retry semantics</td><td class="future">The difference between an agent that can safely retry autonomously and one whose retry duplicates a transaction. For autonomous invocation this is a safety property, not documentation hygiene</td></tr>
+        <tr><td class="rowhead">Stable, versioned error contract</td><td class="future">Agents recover from failures by reasoning over them. Undocumented or shifting errors turn recoverable failures into hallucinated handling</td></tr>
+        <tr><td class="rowhead">Published SLOs and status signals</td><td class="future">What an orchestrator plans against: timeout budgets, fallback selection, routing around a degraded dependency instead of discovering it through silence</td></tr>
+        <tr><td class="rowhead">Semantic versioning and deprecation policy</td><td class="future">Agent workflows are built against contracts and break silently when contracts drift. The notice period protects fleets of workflows, not just consuming teams</td></tr>
+        <tr><td class="rowhead">Registry discoverability</td><td class="future">The registry is the agent's capability catalog. For a human it aids discovery; for an agent it is the entire universe of what exists</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>Agents make the duplication problem ungovernable, not just expensive</h3>
+  <p>With human teams, fifteen local identity implementations is waste and risk. With agents in the loop, it is worse: there is no coherent way to bound what an agent may do, audit what it did, or propagate classification through what it touched when the same capability exists in fifteen bespoke variants. Governable agentic work requires exactly what this strategy delivers: one common service layer, consumed through one mediated gateway, with identity, classification propagation, and the accountability chain implemented once. The THEMIS accountability model assumes this shape. A common service layer is not merely helpful for agent governance; it is the precondition for it.</p>
+  <h3>The default we set gets amplified either way</h3>
+  <p>Agents are also prolific builders. Pointed at a task with no catalog to draw from, an agentic development workflow will generate its own local service layer faster than any human team ever duplicated one, multiplying today's problem at machine speed. Pointed at a productized catalog, the same agent assembles instead of building, exactly as we want application teams to. Agents do not change the strategic choice; they raise its stakes in both directions and shorten the time we have to make it.</p>
+  <h3>And the payoff runs forward</h3>
+  <p>The quick-reaction application assembled by a human team in three weeks is the intermediate state. The end state this substrate enables is workflows assembled at task time: an agent that composes ingest, translation, entity resolution, and publication into a mission answer in minutes, under governance, because every one of those capabilities was a product with a contract it could discover, invoke, and trust. That end state cannot be retrofitted onto a portfolio of application-locked capabilities. It can only be built on a service layer that was productized from the start.</p>
+</section>
+
+<section id="s5">
+  <div class="sec-head"><span class="num">5.0</span><h2>What the end state looks like</h2></div>
+  <p><strong>For an application team, day one looks like this.</strong> The team shops the service registry: every enterprise capability listed with its owner, contract, maturity, and status. They obtain credentials through a self-service flow the same day. They make their first successful call against each service they need within [target] minutes of opening its documentation, starting from a maintained reference client rather than a blank file. They stand up their skeleton from the shared app shell with identity and classification already wired. Their first weeks are spent on mission logic, because the plumbing was someone's product, not their project. A three-month build becomes a three-week assembly. That is not a metaphor; it is the target.</p>
+  <p><strong>For a platform team, the deliverable changes.</strong> They ship products, not components. A capability is done when it meets the productization standard for its tier: stable contract, self-service onboarding, reference implementation, operational SLOs, named ownership, and an honest maturity declaration. Their roadmap is driven by consumer demand visible in the registry, their success is measured in adoptions and time-to-first-call, and their consumers are teams they have never met, by design.</p>
+  <p><strong>For the enterprise, the portfolio inverts.</strong> Capability platforms [Foundation, AIAS, LPS] own the common service layer and carry the majority of durable engineering investment. Applications, flagship and quick-reaction, become thin, fast, and numerous, because everything below the mission logic line is consumed rather than built. Vendor deliveries are accepted against the productization standard, so what an OTA produces is adoptable on arrival. The catalog is simultaneously the acquisition structure and the application builder's menu.</p>
+  <p><strong>And critically, honesty is built into the model.</strong> Services declare their maturity plainly: Experimental, Beta, Productized, or Sunset. A consuming team reads the label and decides with open eyes. A catalog that overstates readiness would collapse trust in the whole strategy; a catalog that is honestly incomplete still accelerates every team that uses it.</p>
+</section>
+
+<section id="s6">
+  <div class="sec-head"><span class="num">6.0</span><h2>The mechanism: the productization standard</h2></div>
+  <p>The shift is enforced by one standard, governed by one test:</p>
+  <div class="callout">
+    <div class="label">The adoption test</div>
+    <div class="big">A team that has never contacted the owning team can adopt the service in production without a meeting.</div>
+  </div>
+  <p>Everything else is mechanics in service of that test. The standard [defined in full in the companion Productization Standard document] requires six properties of every shared capability: a stable versioned contract with a deprecation policy, self-service onboarding, a maintained reference implementation, an operational contract with published SLOs and degraded-mode behavior, named ownership with a support channel, and an honest maturity declaration in the registry.</p>
+  <p>Two design choices keep the standard from becoming bureaucracy:</p>
+  <ul class="doc-list">
+    <li><strong>Proportional weight.</strong> Not everything reusable is a running service. Three tiers, productized service, shared library, and reference pattern, fulfill the reuse rule at three costs. The owner picks the tier by how much genuinely varies between consumers. Gold-plating a two-consumer library is the same failure as under-productizing a broadly consumed service.</li>
+    <li><strong>The test outranks the checklist.</strong> Where a genuine constraint blocks a specific requirement, an air-gapped enclave, a classified sandbox, the owner records a public waiver with a compensating measure. Waivers exist for real constraints, not for skipping the work.</li>
+  </ul>
+  <div class="callout rule">
+    <div class="label">The rule</div>
+    <div class="big">If more than one application may need a capability, or any quick-reaction application may need it, it shall be delivered as a product. Building it is not sufficient. Productizing it is the requirement.</div>
+  </div>
+</section>
+
+<section id="s7">
+  <div class="sec-head"><span class="num">7.0</span><h2>How we get there</h2></div>
+  <p>This is a transition, not a flag day. Three moves, in order of leverage:</p>
+  <h3>Move 1: Change the acquisition boundary now</h3>
+  <p>Insert the productization acceptance requirement into every platform OTA at drafting. From that point, vendor deliveries either meet the standard or are accepted only as declared Beta with gaps enumerated. This is the cheapest move on the list and the most consequential, because it redirects money already being spent.</p>
+  <h3>Move 2: Productize what already exists before building anything new</h3>
+  <p>Several foundation capabilities [identity, classification propagation, retention, storage, search] function today. They are components, not products. Wrapping them in the standard, one contract surface, registry presence, self-service onboarding, is mostly contract discipline and integration, not new construction, and it seeds the catalog with the services every application needs first. The registry itself [the Interop effort is the candidate] stands up in this move, because a catalog nobody can find is the old world with extra steps.</p>
+  <h3>Move 3: Change the application default</h3>
+  <p>Once the catalog has real products in it, the build-vs-consume default flips. New applications justify building locally rather than justifying consuming. The first two or three applications assembled under the new model are run deliberately as proof points, instrumented for assembly time, and their friction reports feed directly back into the standard. The shared app shell and UI component library land in this move, because the fastest backend catalog still leaves teams rebuilding frontend plumbing without them.</p>
+  <h3>What we deliberately do not do</h3>
+  <p>Pause application delivery for a platform re-architecture, mandate migration of existing applications onto the service layer on day one, or build speculative services ahead of demonstrated demand. Existing applications migrate opportunistically, at natural touchpoints. The catalog grows by extraction and productization of things applications actually need, proven by the fact that multiple applications built them.</p>
+</section>
+
+<section id="s8">
+  <div class="sec-head"><span class="num">8.0</span><h2>How we will know it is working</h2></div>
+  <p>The strategy stands or falls on a small number of measures, all consumer-side:</p>
+  <ul class="doc-list">
+    <li><strong>Time-to-first-call:</strong> from opening a service's documentation to a successful production-path call, per service. Target: under [X] minutes. This is the direct measure of the adoption test.</li>
+    <li><strong>Application assembly time:</strong> concept to fielded for quick-reaction applications. The three-month-to-three-week trajectory is the headline claim; we instrument it and report it honestly.</li>
+    <li><strong>Adoption without contact:</strong> the fraction of new service adoptions completed with zero meetings with the owning team. This is the adoption test measured in the wild.</li>
+    <li><strong>Duplication trend:</strong> count of local reimplementations of catalog capabilities in new applications. It should approach zero for Productized-maturity services and its exceptions should each carry a recorded justification.</li>
+    <li><strong>Catalog honesty:</strong> consumer-reported gaps between declared maturity and actual experience. A rising number here is a five-alarm signal, because the entire model runs on catalog trust.</li>
+  </ul>
+  <p>Vanity measures we will not use: number of services in the catalog, lines of platform code, or number of OTA deliverables accepted. A large catalog of unadoptable services is the failure state, counted proudly.</p>
+</section>
+
+<section id="s9">
+  <div class="sec-head"><span class="num">9.0</span><h2>What we are asking leadership to decide</h2></div>
+  <ul class="doc-list">
+    <li><strong>Adopt the rule and the standard</strong> as SDO policy: shared capabilities are delivered as products, to the productization standard, at the declared tier.</li>
+    <li><strong>Approve insertion of the acceptance requirement</strong> into the platform OTAs at drafting, before signature.</li>
+    <li><strong>Charter the Foundation platform</strong> as the home for the substrate services no existing OTA can own, and direct the incorporation of the existing foundation services under one product surface.</li>
+    <li><strong>Set the numeric targets once, centrally:</strong> onboarding time, first-call time, deprecation notice period, concurrently supported versions.</li>
+    <li><strong>Name an owner for the registry and for the shared UI component library,</strong> the two highest-leverage currently-unowned items in the strategy.</li>
+  </ul>
+</section>
+
+</main>
+</div>
+
+<footer>
+  DRAFT INTERNAL STRATEGY DOCUMENT FOR REVIEW. THE PRODUCTIZATION STANDARD REFERENCED THROUGHOUT IS DEFINED IN FULL IN THE COMPANION DOCUMENT. PLATFORM AND SERVICE CATALOG ASSIGNMENTS ARE MAINTAINED SEPARATELY.
+</footer>
+
+</body>
+</html>
